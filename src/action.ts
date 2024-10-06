@@ -10,7 +10,7 @@ export interface Input {
   build?: string
 }
 
-export function getActionInput() {
+export function getActionInput(): Input {
   const result: Input = {
     baseVersion: getInput('baseVersion', { required: true }),
     format: getInput('format', { required: true }) as VersionFormat,
@@ -41,7 +41,7 @@ export interface Output {
   build?: string
 }
 
-export function setActionOutput(value: Output) {
+export function setActionOutput(value: Output): void {
   Object.entries(value).forEach(([k, v]) => setOutput(k, v))
   summary.addHeading(`Next version ${value.version}`)
   summary.addTable([

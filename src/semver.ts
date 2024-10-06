@@ -1,14 +1,10 @@
 import { compare, parse, SemVer } from 'semver'
 
 import { GitHub } from '@actions/github/lib/utils'
-import {
-  Level,
-  mapPrereleaseStrToLevel,
-  PrereleaseLevel,
-  VersionInfo
-} from './common'
+import { Level, mapPrereleaseStrToLevel, VersionInfo } from './common'
 import { Config } from './config'
 
+/* eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 const { t, src } = require('semver/internal/re')
 
 const BUILDPART = '(\\+([\\d\\w]([+._\\-]?[\\d\\w]+)*))?'
@@ -60,7 +56,7 @@ export async function nextRelease(
       return baseVersion.inc('minor')
     case Level.PATCH:
       return baseVersion.inc('patch')
-    default:
+    default: {
       const releaseSiblingPattern: RegExp = getPatternByBaseAndLevel(
         config.level,
         baseVersion
@@ -68,7 +64,7 @@ export async function nextRelease(
       const lastRelease = (await octokit.rest.repos.listReleases()).data
         .filter(release => release.name && release.name.length > 0)
         .map(release => {
-          const match = config.releaseTagPattern.exec(release.name!!)
+          const match = config.releaseTagPattern.exec(release.name!)
           if (match == null) return null
           return match[1]
         })
@@ -86,6 +82,7 @@ export async function nextRelease(
         return baseVersion
       }
       return lastRelease.inc('prerelease')
+    }
   }
 }
 

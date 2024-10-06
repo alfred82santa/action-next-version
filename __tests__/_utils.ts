@@ -1,8 +1,11 @@
 /**
  * Unit tests utilities
  */
+import type { components } from '@octokit/openapi-types/types'
 
-export function _buildRelease(name: string | null) {
+export function _buildRelease(
+  name: string | null
+): components['schemas']['release'] {
   return {
     name: name,
     url: '',

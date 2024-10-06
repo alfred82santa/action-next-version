@@ -5,7 +5,7 @@
 import { getPatternByBaseAndLevel, nextRelease } from '../src/semver'
 import { Level } from '../src/common'
 import { expect } from '@jest/globals'
-import { parse, SemVer } from 'semver'
+import { SemVer } from 'semver'
 import { GitHub } from '@actions/github/lib/utils'
 import { Config } from '../src/config'
 import { getOctokit } from '@actions/github'
@@ -33,25 +33,25 @@ describe('Semver: getPatternByBaseAndLevel', () => {
   it('Release candidate pattern', async () => {
     expect(
       getPatternByBaseAndLevel(Level.RELEASE_CANDIDATE, new SemVer('2.6.4'))
-    ).toEqual(/^2\.6\.4\-rc\.(0|[1-9]\d*)(\+([\d\w]([+._\-]?[\d\w]+)*))?$/)
+    ).toEqual(/^2\.6\.4-rc\.(0|[1-9]\d*)(\+([\d\w]([+._-]?[\d\w]+)*))?$/)
   })
 
   it('Beta pattern', async () => {
     expect(getPatternByBaseAndLevel(Level.BETA, new SemVer('2.6.4'))).toEqual(
-      /^2\.6\.4\-beta\.(0|[1-9]\d*)(\+([\d\w]([+._\-]?[\d\w]+)*))?$/
+      /^2\.6\.4-beta\.(0|[1-9]\d*)(\+([\d\w]([+._-]?[\d\w]+)*))?$/
     )
   })
 
   it('Alpha pattern', async () => {
     expect(getPatternByBaseAndLevel(Level.ALPHA, new SemVer('2.6.4'))).toEqual(
-      /^2\.6\.4\-alpha\.(0|[1-9]\d*)(\+([\d\w]([+._\-]?[\d\w]+)*))?$/
+      /^2\.6\.4-alpha\.(0|[1-9]\d*)(\+([\d\w]([+._-]?[\d\w]+)*))?$/
     )
   })
 
   it('Development pattern', async () => {
     expect(
       getPatternByBaseAndLevel(Level.DEVELOPMENT, new SemVer('2.6.4'))
-    ).toEqual(/^2\.6\.4\-dev\.(0|[1-9]\d*)(\+([\d\w]([+._\-]?[\d\w]+)*))?$/)
+    ).toEqual(/^2\.6\.4-dev\.(0|[1-9]\d*)(\+([\d\w]([+._-]?[\d\w]+)*))?$/)
   })
 })
 

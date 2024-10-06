@@ -13,13 +13,13 @@ import { _buildRelease } from './_utils'
 
 describe('PEP440: getPatternByBaseAndLevel', () => {
   it('Major pattern', async () => {
-    expect(getPatternByBaseAndLevel(Level.MAJOR, parse('2.6.4')!!)).toEqual(
+    expect(getPatternByBaseAndLevel(Level.MAJOR, parse('2.6.4')!)).toEqual(
       /^(?:(?:0|[1-9][0-9]*)(?:\.(?:0|[1-9][0-9]*))*)$/
     )
   })
 
   it('Minor pattern', async () => {
-    expect(getPatternByBaseAndLevel(Level.MINOR, parse('2.6.4')!!)).toEqual(
+    expect(getPatternByBaseAndLevel(Level.MINOR, parse('2.6.4')!)).toEqual(
       /^2\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)$/
     )
   })
@@ -32,29 +32,29 @@ describe('PEP440: getPatternByBaseAndLevel', () => {
 
   it('Release candidate pattern', async () => {
     expect(
-      getPatternByBaseAndLevel(Level.RELEASE_CANDIDATE, parse('2.6.4')!!)
+      getPatternByBaseAndLevel(Level.RELEASE_CANDIDATE, parse('2.6.4')!)
     ).toEqual(
-      /^2\.6\.4(?:[-_\.]?(?:rc)[-_\.]?(?:0|[1-9][0-9]*))(?:\+(?:[\d\w](?:[+._\-]?[\d\w]+)*))?$/
+      /^2\.6\.4(?:[-_.]?(?:rc)[-_.]?(?:0|[1-9][0-9]*))(?:\+(?:[\d\w](?:[+._-]?[\d\w]+)*))?$/
     )
   })
 
   it('Beta pattern', async () => {
-    expect(getPatternByBaseAndLevel(Level.BETA, parse('2.6.4')!!)).toEqual(
-      /^2\.6\.4(?:[-_\.]?(?:beta|b)[-_\.]?(?:0|[1-9][0-9]*))(?:\+(?:[\d\w](?:[+._\-]?[\d\w]+)*))?$/
+    expect(getPatternByBaseAndLevel(Level.BETA, parse('2.6.4')!)).toEqual(
+      /^2\.6\.4(?:[-_.]?(?:beta|b)[-_.]?(?:0|[1-9][0-9]*))(?:\+(?:[\d\w](?:[+._-]?[\d\w]+)*))?$/
     )
   })
 
   it('Alpha pattern', async () => {
-    expect(getPatternByBaseAndLevel(Level.ALPHA, parse('2.6.4')!!)).toEqual(
-      /^2\.6\.4(?:[-_\.]?(?:alpha|a)[-_\.]?(?:0|[1-9][0-9]*))(?:\+(?:[\d\w](?:[+._\-]?[\d\w]+)*))?$/
+    expect(getPatternByBaseAndLevel(Level.ALPHA, parse('2.6.4')!)).toEqual(
+      /^2\.6\.4(?:[-_.]?(?:alpha|a)[-_.]?(?:0|[1-9][0-9]*))(?:\+(?:[\d\w](?:[+._-]?[\d\w]+)*))?$/
     )
   })
 
   it('Development pattern', async () => {
     expect(
-      getPatternByBaseAndLevel(Level.DEVELOPMENT, parse('2.6.4')!!)
+      getPatternByBaseAndLevel(Level.DEVELOPMENT, parse('2.6.4')!)
     ).toEqual(
-      /^2\.6\.4(?:[-_\.]?dev[-_\.]?(?:0|[1-9][0-9]*))?(?:\+(?:[\d\w](?:[+._\-]?[\d\w]+)*))?$/
+      /^2\.6\.4(?:[-_.]?dev[-_.]?(?:0|[1-9][0-9]*))?(?:\+(?:[\d\w](?:[+._-]?[\d\w]+)*))?$/
     )
   })
 })

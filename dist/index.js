@@ -33497,7 +33497,7 @@ function getPatternByBaseAndLevel(level, baseVersion) {
                 PEP440_VERSION_PATTERNS[4] +
                 BUILDPART +
                 '$');
-        default:
+        default: {
             const prefixes = _buildPrereleasePrefixes(level);
             const pattern = [
                 '(?:', // pre-release
@@ -33513,6 +33513,7 @@ function getPatternByBaseAndLevel(level, baseVersion) {
                 `${pattern}` +
                 BUILDPART +
                 '$');
+        }
     }
 }
 async function nextRelease(config, octokit) {
@@ -33526,7 +33527,7 @@ async function nextRelease(config, octokit) {
             return (0, version_1.parse)((0, pep440_1.inc)(config.baseVersion, 'minor'));
         case common_1.Level.PATCH:
             return (0, version_1.parse)((0, pep440_1.inc)(config.baseVersion, 'patch'));
-        default:
+        default: {
             const releaseSiblingPattern = getPatternByBaseAndLevel(config.level, baseVersion);
             const lastRelease = (await octokit.rest.repos.listReleases()).data
                 .filter(release => release.name && release.name.length > 0)
@@ -33558,6 +33559,7 @@ async function nextRelease(config, octokit) {
             else {
                 return (0, version_1.parse)((0, pep440_1.inc)((0, version_1.stringify)(lastRelease), 'prerelease', _normalizeLevelLetter(config.level)));
             }
+        }
     }
 }
 function toVersionInfo(version, build) {
@@ -33593,6 +33595,7 @@ exports.nextRelease = nextRelease;
 exports.toVersionInfo = toVersionInfo;
 const semver_1 = __nccwpck_require__(1383);
 const common_1 = __nccwpck_require__(9108);
+/* eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 const { t, src } = __nccwpck_require__(9523);
 const BUILDPART = '(\\+([\\d\\w]([+._\\-]?[\\d\\w]+)*))?';
 function getPatternByBaseAndLevel(level, baseVersion) {
@@ -33628,7 +33631,7 @@ async function nextRelease(config, octokit) {
             return baseVersion.inc('minor');
         case common_1.Level.PATCH:
             return baseVersion.inc('patch');
-        default:
+        default: {
             const releaseSiblingPattern = getPatternByBaseAndLevel(config.level, baseVersion);
             const lastRelease = (await octokit.rest.repos.listReleases()).data
                 .filter(release => release.name && release.name.length > 0)
@@ -33651,6 +33654,7 @@ async function nextRelease(config, octokit) {
                 return baseVersion;
             }
             return lastRelease.inc('prerelease');
+        }
     }
 }
 function toVersionInfo(version, build) {

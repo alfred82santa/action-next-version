@@ -91,7 +91,7 @@ export function getPatternByBaseAndLevel(
           BUILDPART +
           '$'
       )
-    default:
+    default: {
       const prefixes = _buildPrereleasePrefixes(level)
       const pattern = [
         '(?:', // pre-release
@@ -109,6 +109,7 @@ export function getPatternByBaseAndLevel(
           BUILDPART +
           '$'
       )
+    }
   }
 }
 
@@ -122,12 +123,12 @@ export async function nextRelease(
 
   switch (config.level) {
     case Level.MAJOR:
-      return parse(inc(config.baseVersion, 'major'))!!
+      return parse(inc(config.baseVersion, 'major'))!
     case Level.MINOR:
-      return parse(inc(config.baseVersion, 'minor'))!!
+      return parse(inc(config.baseVersion, 'minor'))!
     case Level.PATCH:
-      return parse(inc(config.baseVersion, 'patch'))!!
-    default:
+      return parse(inc(config.baseVersion, 'patch'))!
+    default: {
       const releaseSiblingPattern: RegExp = getPatternByBaseAndLevel(
         config.level,
         baseVersion
@@ -135,7 +136,7 @@ export async function nextRelease(
       const lastRelease = (await octokit.rest.repos.listReleases()).data
         .filter(release => release.name && release.name.length > 0)
         .map(release => {
-          const match = config.releaseTagPattern.exec(release.name!!)
+          const match = config.releaseTagPattern.exec(release.name!)
           if (match == null) return null
           return match[1]
         })
@@ -143,7 +144,7 @@ export async function nextRelease(
         .filter(v => releaseSiblingPattern.test(v))
         .map(v => parse(v))
         .filter(v => v != null)
-        .sort((a, b) => compare(stringify(a)!!, stringify(b)!!))
+        .sort((a, b) => compare(stringify(a)!, stringify(b)!))
         .pop()
 
       if (!lastRelease) {
@@ -155,17 +156,18 @@ export async function nextRelease(
         return baseVersion
       }
       if (config.level == Level.DEVELOPMENT) {
-        lastRelease.dev[1] = (lastRelease.dev[1] as number)!! + 1
+        lastRelease.dev[1] = (lastRelease.dev[1] as number) + 1
         return lastRelease
       } else {
         return parse(
           inc(
-            stringify(lastRelease)!!,
+            stringify(lastRelease)!,
             'prerelease',
             _normalizeLevelLetter(config.level)
           )
-        )!!
+        )!
       }
+    }
   }
 }
 
