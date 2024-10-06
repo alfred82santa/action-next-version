@@ -3,6 +3,7 @@ import { compare, parse, SemVer } from 'semver'
 import { GitHub } from '@actions/github/lib/utils'
 import { Level, mapPrereleaseStrToLevel, VersionInfo } from './common'
 import { Config } from './config'
+import { debug } from '@actions/core'
 
 /* eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 const { t, src } = require('semver/internal/re')
@@ -61,27 +62,32 @@ export async function nextRelease(
         config.level,
         baseVersion
       )
-      const lastRelease = (await octokit.rest.repos.listReleases()).data
-        .filter(release => release.name && release.name.length > 0)
-        .map(release => {
-          const match = config.releaseTagPattern.exec(release.name!)
-          if (match == null) return null
-          return match[1]
-        })
-        .filter(v => v != null)
-        .filter(v => releaseSiblingPattern.test(v))
-        .map(v => parse(v))
-        .filter(v => v != null)
-        .sort((a, b) => compare(a, b))
-        .pop()
+      try {
+        const lastRelease = (await octokit.rest.repos.listReleases()).data
+          .filter(release => release.name && release.name.length > 0)
+          .map(release => {
+            const match = config.releaseTagPattern.exec(release.name!)
+            if (match == null) return null
+            return match[1]
+          })
+          .filter(v => v != null)
+          .filter(v => releaseSiblingPattern.test(v))
+          .map(v => parse(v))
+          .filter(v => v != null)
+          .sort((a, b) => compare(a, b))
+          .pop()
 
-      if (!lastRelease) {
-        baseVersion.prerelease = [config.level as string, 0]
-        baseVersion.format()
-        baseVersion.raw = baseVersion.version
-        return baseVersion
+        if (!lastRelease) {
+          baseVersion.prerelease = [config.level as string, 0]
+          baseVersion.format()
+          baseVersion.raw = baseVersion.version
+          return baseVersion
+        }
+        return lastRelease.inc('prerelease')
+      } catch (err) {
+        debug(`${err}`)
+        throw err
       }
-      return lastRelease.inc('prerelease')
     }
   }
 }

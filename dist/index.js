@@ -33595,6 +33595,7 @@ exports.nextRelease = nextRelease;
 exports.toVersionInfo = toVersionInfo;
 const semver_1 = __nccwpck_require__(1383);
 const common_1 = __nccwpck_require__(9108);
+const core_1 = __nccwpck_require__(2186);
 /* eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 const { t, src } = __nccwpck_require__(9523);
 const BUILDPART = '(\\+([\\d\\w]([+._-]?[\\d\\w]+)*))?';
@@ -33633,27 +33634,33 @@ async function nextRelease(config, octokit) {
             return baseVersion.inc('patch');
         default: {
             const releaseSiblingPattern = getPatternByBaseAndLevel(config.level, baseVersion);
-            const lastRelease = (await octokit.rest.repos.listReleases()).data
-                .filter(release => release.name && release.name.length > 0)
-                .map(release => {
-                const match = config.releaseTagPattern.exec(release.name);
-                if (match == null)
-                    return null;
-                return match[1];
-            })
-                .filter(v => v != null)
-                .filter(v => releaseSiblingPattern.test(v))
-                .map(v => (0, semver_1.parse)(v))
-                .filter(v => v != null)
-                .sort((a, b) => (0, semver_1.compare)(a, b))
-                .pop();
-            if (!lastRelease) {
-                baseVersion.prerelease = [config.level, 0];
-                baseVersion.format();
-                baseVersion.raw = baseVersion.version;
-                return baseVersion;
+            try {
+                const lastRelease = (await octokit.rest.repos.listReleases()).data
+                    .filter(release => release.name && release.name.length > 0)
+                    .map(release => {
+                    const match = config.releaseTagPattern.exec(release.name);
+                    if (match == null)
+                        return null;
+                    return match[1];
+                })
+                    .filter(v => v != null)
+                    .filter(v => releaseSiblingPattern.test(v))
+                    .map(v => (0, semver_1.parse)(v))
+                    .filter(v => v != null)
+                    .sort((a, b) => (0, semver_1.compare)(a, b))
+                    .pop();
+                if (!lastRelease) {
+                    baseVersion.prerelease = [config.level, 0];
+                    baseVersion.format();
+                    baseVersion.raw = baseVersion.version;
+                    return baseVersion;
+                }
+                return lastRelease.inc('prerelease');
             }
-            return lastRelease.inc('prerelease');
+            catch (err) {
+                (0, core_1.debug)(`${err}`);
+                throw err;
+            }
         }
     }
 }
