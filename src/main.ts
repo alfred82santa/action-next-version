@@ -15,10 +15,18 @@ export async function run(): Promise<void> {
     const inputData = getActionInput()
     const octokit = getOctokit(inputData.githubToken, {
       log: {
-        debug: (msg: string): void => { core.debug(msg) },
-        info: (msg: string): void => { core.debug(msg) },
-        warn: (msg: string): void => { core.debug(msg) },
-        error: (msg: string): void => { core.debug(msg) },
+        debug: (msg: string): void => {
+          core.debug(msg)
+        },
+        info: (msg: string): void => {
+          core.debug(msg)
+        },
+        warn: (msg: string): void => {
+          core.debug(msg)
+        },
+        error: (msg: string): void => {
+          core.debug(msg)
+        }
       }
     })
     const config = new Config(inputData)

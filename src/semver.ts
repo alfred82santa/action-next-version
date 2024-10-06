@@ -20,24 +20,24 @@ export function getPatternByBaseAndLevel(
     case Level.MINOR:
       return new RegExp(
         `^${baseVersion.major}\\.` +
-        `(${src[t.NUMERICIDENTIFIER]})\\.` +
-        `(${src[t.NUMERICIDENTIFIER]})$`
+          `(${src[t.NUMERICIDENTIFIER]})\\.` +
+          `(${src[t.NUMERICIDENTIFIER]})$`
       )
     case Level.PATCH:
       return new RegExp(
         `^${baseVersion.major}\\.` +
-        `${baseVersion.minor}\\.` +
-        `(${src[t.NUMERICIDENTIFIER]})$`
+          `${baseVersion.minor}\\.` +
+          `(${src[t.NUMERICIDENTIFIER]})$`
       )
     default:
       return new RegExp(
         `^${baseVersion.major}\\.` +
-        `${baseVersion.minor}\\.` +
-        `${baseVersion.patch}-` +
-        `${level as string}\\.` +
-        `(${src[t.NUMERICIDENTIFIER]})` +
-        BUILDPART +
-        '$'
+          `${baseVersion.minor}\\.` +
+          `${baseVersion.patch}-` +
+          `${level as string}\\.` +
+          `(${src[t.NUMERICIDENTIFIER]})` +
+          BUILDPART +
+          '$'
       )
   }
 }
@@ -62,8 +62,9 @@ export async function nextRelease(
         config.level,
         baseVersion
       )
+      let lastRelease: SemVer | undefined = undefined
       try {
-        const lastRelease = (await octokit.rest.repos.listReleases()).data
+        lastRelease = (await octokit.rest.repos.listReleases()).data
           .filter(release => release.name && release.name.length > 0)
           .map(release => {
             const match = config.releaseTagPattern.exec(release.name!)
@@ -76,18 +77,17 @@ export async function nextRelease(
           .filter(v => v != null)
           .sort((a, b) => compare(a, b))
           .pop()
-
-        if (!lastRelease) {
-          baseVersion.prerelease = [config.level as string, 0]
-          baseVersion.format()
-          baseVersion.raw = baseVersion.version
-          return baseVersion
-        }
-        return lastRelease.inc('prerelease')
       } catch (err) {
         debug(`${err}`)
-        throw err
       }
+
+      if (!lastRelease) {
+        baseVersion.prerelease = [config.level as string, 0]
+        baseVersion.format()
+        baseVersion.raw = baseVersion.version
+        return baseVersion
+      }
+      return lastRelease.inc('prerelease')
     }
   }
 }

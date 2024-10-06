@@ -33392,7 +33392,22 @@ const pep440 = __importStar(__nccwpck_require__(5743));
 async function run() {
     try {
         const inputData = (0, action_1.getActionInput)();
-        const octokit = (0, github_1.getOctokit)(inputData.githubToken);
+        const octokit = (0, github_1.getOctokit)(inputData.githubToken, {
+            log: {
+                debug: (msg) => {
+                    core.debug(msg);
+                },
+                info: (msg) => {
+                    core.debug(msg);
+                },
+                warn: (msg) => {
+                    core.debug(msg);
+                },
+                error: (msg) => {
+                    core.debug(msg);
+                }
+            }
+        });
         const config = new config_1.Config(inputData);
         let versionInfo;
         switch (inputData.format) {
@@ -33427,6 +33442,7 @@ exports.toVersionInfo = toVersionInfo;
 const common_1 = __nccwpck_require__(9108);
 const pep440_1 = __nccwpck_require__(338);
 const version_1 = __nccwpck_require__(4837);
+const core_1 = __nccwpck_require__(2186);
 const NUMPART = '(?:0|[1-9][0-9]*)';
 const PEP440_VERSION_PATTERNS = [
     '(?:(?<epoch>[0-9]+)!)?', // epoch
@@ -33529,20 +33545,26 @@ async function nextRelease(config, octokit) {
             return (0, version_1.parse)((0, pep440_1.inc)(config.baseVersion, 'patch'));
         default: {
             const releaseSiblingPattern = getPatternByBaseAndLevel(config.level, baseVersion);
-            const lastRelease = (await octokit.rest.repos.listReleases()).data
-                .filter(release => release.name && release.name.length > 0)
-                .map(release => {
-                const match = config.releaseTagPattern.exec(release.name);
-                if (match == null)
-                    return null;
-                return match[1];
-            })
-                .filter(v => v != null)
-                .filter(v => releaseSiblingPattern.test(v))
-                .map(v => (0, version_1.parse)(v))
-                .filter(v => v != null)
-                .sort((a, b) => (0, pep440_1.compare)((0, version_1.stringify)(a), (0, version_1.stringify)(b)))
-                .pop();
+            let lastRelease = undefined;
+            try {
+                lastRelease = (await octokit.rest.repos.listReleases()).data
+                    .filter(release => release.name && release.name.length > 0)
+                    .map(release => {
+                    const match = config.releaseTagPattern.exec(release.name);
+                    if (match == null)
+                        return null;
+                    return match[1];
+                })
+                    .filter(v => v != null)
+                    .filter(v => releaseSiblingPattern.test(v))
+                    .map(v => (0, version_1.parse)(v))
+                    .filter(v => v != null)
+                    .sort((a, b) => (0, pep440_1.compare)((0, version_1.stringify)(a), (0, version_1.stringify)(b)))
+                    .pop();
+            }
+            catch (err) {
+                (0, core_1.debug)(`${err}`);
+            }
             if (!lastRelease) {
                 if (config.level == common_1.Level.DEVELOPMENT) {
                     baseVersion.dev = [_normalizeLevelLetter(config.level), 0];
@@ -33634,8 +33656,9 @@ async function nextRelease(config, octokit) {
             return baseVersion.inc('patch');
         default: {
             const releaseSiblingPattern = getPatternByBaseAndLevel(config.level, baseVersion);
+            let lastRelease = undefined;
             try {
-                const lastRelease = (await octokit.rest.repos.listReleases()).data
+                lastRelease = (await octokit.rest.repos.listReleases()).data
                     .filter(release => release.name && release.name.length > 0)
                     .map(release => {
                     const match = config.releaseTagPattern.exec(release.name);
@@ -33649,18 +33672,17 @@ async function nextRelease(config, octokit) {
                     .filter(v => v != null)
                     .sort((a, b) => (0, semver_1.compare)(a, b))
                     .pop();
-                if (!lastRelease) {
-                    baseVersion.prerelease = [config.level, 0];
-                    baseVersion.format();
-                    baseVersion.raw = baseVersion.version;
-                    return baseVersion;
-                }
-                return lastRelease.inc('prerelease');
             }
             catch (err) {
                 (0, core_1.debug)(`${err}`);
-                throw err;
             }
+            if (!lastRelease) {
+                baseVersion.prerelease = [config.level, 0];
+                baseVersion.format();
+                baseVersion.raw = baseVersion.version;
+                return baseVersion;
+            }
+            return lastRelease.inc('prerelease');
         }
     }
 }
