@@ -43,7 +43,7 @@ jobs:
 
       - name: Calculate prerelease version
         id: prerelease-version
-        uses: alfred82santa/action-next-version
+        uses: alfred82santa/action-next-version@d08d11d
         with:
           version: ${{ steps.current-version.outputs.version }}
           level: ${{ inputs.prereleaseLevel }}
