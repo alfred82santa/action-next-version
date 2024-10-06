@@ -27,6 +27,9 @@ on:
         type: boolean
         default: false
 
+permissions:
+  contents: write
+
 jobs:
   publish-packages:
     uses: ./.github/workflows/common-make-release.yml
