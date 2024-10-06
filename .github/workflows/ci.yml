@@ -69,7 +69,7 @@ jobs:
         id: test-action
         uses: ./
         with:
-          version: ${{ steps.current-version.outputs.version }}
+          baseVersion: ${{ steps.current-version.outputs.version }}
           level: dev
           versionFormat: 'semver'
 
