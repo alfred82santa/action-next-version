@@ -45,7 +45,7 @@ jobs:
         id: prerelease-version
         uses: ./
         with:
-          baseVersion: ${{ steps.current-version.outputs.version }}
+          version: ${{ steps.current-version.outputs.version }}
           level: ${{ inputs.prereleaseLevel }}
           versionFormat: 'semver'
 

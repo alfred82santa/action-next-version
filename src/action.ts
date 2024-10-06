@@ -12,7 +12,7 @@ export interface Input {
 
 export function getActionInput(): Input {
   const result: Input = {
-    baseVersion: getInput('baseVersion', { required: true }),
+    baseVersion: getInput('version', { required: true }),
     format: getInput('format', { required: true }) as VersionFormat,
     level: getInput('level', { required: true }) as Level,
     releaseTagPattern: new RegExp(
