@@ -20,24 +20,24 @@ export function getPatternByBaseAndLevel(
     case Level.MINOR:
       return new RegExp(
         `^${baseVersion.major}\\.` +
-          `(${src[t.NUMERICIDENTIFIER]})\\.` +
-          `(${src[t.NUMERICIDENTIFIER]})$`
+        `(${src[t.NUMERICIDENTIFIER]})\\.` +
+        `(${src[t.NUMERICIDENTIFIER]})$`
       )
     case Level.PATCH:
       return new RegExp(
         `^${baseVersion.major}\\.` +
-          `${baseVersion.minor}\\.` +
-          `(${src[t.NUMERICIDENTIFIER]})$`
+        `${baseVersion.minor}\\.` +
+        `(${src[t.NUMERICIDENTIFIER]})$`
       )
     default:
       return new RegExp(
         `^${baseVersion.major}\\.` +
-          `${baseVersion.minor}\\.` +
-          `${baseVersion.patch}-` +
-          `${level as string}\\.` +
-          `(${src[t.NUMERICIDENTIFIER]})` +
-          BUILDPART +
-          '$'
+        `${baseVersion.minor}\\.` +
+        `${baseVersion.patch}-` +
+        `${level as string}\\.` +
+        `(${src[t.NUMERICIDENTIFIER]})` +
+        BUILDPART +
+        '$'
       )
   }
 }

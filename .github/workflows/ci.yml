@@ -72,6 +72,7 @@ jobs:
           version: ${{ steps.current-version.outputs.version }}
           level: dev
           versionFormat: 'semver'
+          token: ${{ github.token }}
 
       - name: Print Output
         id: output
