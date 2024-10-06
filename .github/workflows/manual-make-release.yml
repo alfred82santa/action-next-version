@@ -1,0 +1,38 @@
+name: Manual make release
+
+on:
+  workflow_dispatch:
+    inputs:
+      prereleaseLevel:
+        description:
+          'Release level. By default it us rc on release/* branches, beta on
+          develop branches and alpha on any else'
+        type: choice
+        options:
+          - production
+          - rc
+          - beta
+          - alpha
+          - dev
+
+      moveReleasePointers:
+        description:
+          'For stable releases, this flag indicates that major and minor version
+          release tags must be move to new one'
+        type: boolean
+        default: true
+
+      isLatest:
+        description: 'Whether release must be flagged as latest'
+        type: boolean
+        default: false
+
+jobs:
+  publish-packages:
+    uses: ./.github/workflows/common-make-release.yml
+    secrets: inherit
+    with:
+      prereleaseLevel:
+        ${{ !inputs.prereleaseLevel && (startsWith(github.ref_name, 'release/') && 'rc' || github.ref_name == 'main' && 'beta' || 'aplha') ||  (inputs.prereleaseLevel != 'production' && inputs.prereleaseLevel) || '' }}
+      moveReleasePointers: ${{ inputs.moveReleasePointers}}
+      isLatest: ${{ inputs.isLatest }}

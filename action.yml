@@ -1,6 +1,6 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Next version'
+description: 'Calculate new version of package'
+author: 'Alfred Santacatalina'
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
@@ -9,15 +9,52 @@ branding:
 
 # Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  version:
+    description: 'Package version'
     required: true
-    default: '1000'
+  versionFormat:
+    description: 'Version format. Allowed values: semver and pep440'
+    required: true
+    default: 'semver'
+  level:
+    description:
+      'Next version level. Allowed values: major, minor, patch, rc, beta, alpha,
+      dev'
+    required: true
+    default: patch
+  releaseTagPattern:
+    description: 'Release prefix to filter'
+    required: false
+    default: "^v([1-9](?:\\.?[0-9]+)*(?:[\\.\\-_+0-9a-zA-Z]+)?)$"
+  token:
+    description: Personal access token (PAT)
+    required: true
+    default: ${{ github.token }}
 
 # Define your outputs here.
 outputs:
-  time:
-    description: 'Your output description here'
+  version:
+    description: 'Next version'
+  baseRelease:
+    description: 'Base release version'
+  baseReleaseMinor:
+    description: 'Base release version - minor granularity'
+  versionNoBuild:
+    description: 'Next version with no build part'
+  major:
+    description: 'Major part'
+  minor:
+    description: 'Minor part'
+  patch:
+    description: 'Patch part'
+  prereleaseType:
+    description: 'Prerelease type'
+  prereleaseNumber:
+    description: 'Prerelease number'
+  isPrerelease:
+    description: 'Whether it is a prerelease or not'
+  build:
+    description: 'Build part'
 
 runs:
   using: node20
