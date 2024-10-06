@@ -7,7 +7,7 @@ import { Config } from './config'
 /* eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 const { t, src } = require('semver/internal/re')
 
-const BUILDPART = '(\\+([\\d\\w]([+._\\-]?[\\d\\w]+)*))?'
+const BUILDPART = '(\\+([\\d\\w]([+._-]?[\\d\\w]+)*))?'
 
 export function getPatternByBaseAndLevel(
   level: Level,
@@ -32,7 +32,7 @@ export function getPatternByBaseAndLevel(
       return new RegExp(
         `^${baseVersion.major}\\.` +
           `${baseVersion.minor}\\.` +
-          `${baseVersion.patch}\\-` +
+          `${baseVersion.patch}-` +
           `${level as string}\\.` +
           `(${src[t.NUMERICIDENTIFIER]})` +
           BUILDPART +

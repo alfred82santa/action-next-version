@@ -33433,9 +33433,9 @@ const PEP440_VERSION_PATTERNS = [
     `(?:${NUMPART}(?:\\.${NUMPART})*)`, // release segment
     [
         '(?:', // pre-release
-        '[-_\\.]?',
+        '[-_.]?',
         '(?:(a|b|c|rc|alpha|beta|pre|preview))',
-        '[-_\\.]?',
+        '[-_.]?',
         NUMPART,
         ')'
     ].join(''),
@@ -33444,17 +33444,17 @@ const PEP440_VERSION_PATTERNS = [
         `(?:-${NUMPART})`,
         '|',
         '(?:',
-        '[-_\\.]?',
+        '[-_.]?',
         '(?:post|rev|r)',
-        '[-_\\.]?',
+        '[-_.]?',
         NUMPART,
         ')'
     ].join(''),
     [
         '(?:', // dev release
-        '[-_\\.]?',
+        '[-_.]?',
         'dev',
-        '[-_\\.]?',
+        '[-_.]?',
         NUMPART,
         ')?'
     ].join('')
@@ -33479,7 +33479,7 @@ function _buildPrereleasePrefixes(level) {
             return ['alpha', 'a'];
     }
 }
-const BUILDPART = '(?:\\+(?:[\\d\\w](?:[+._\\-]?[\\d\\w]+)*))?';
+const BUILDPART = '(?:\\+(?:[\\d\\w](?:[+._-]?[\\d\\w]+)*))?';
 function getPatternByBaseAndLevel(level, baseVersion) {
     switch (level) {
         case common_1.Level.MAJOR:
@@ -33501,9 +33501,9 @@ function getPatternByBaseAndLevel(level, baseVersion) {
             const prefixes = _buildPrereleasePrefixes(level);
             const pattern = [
                 '(?:', // pre-release
-                '[-_\\.]?',
+                '[-_.]?',
                 '(?:' + prefixes.join('|') + ')',
-                '[-_\\.]?',
+                '[-_.]?',
                 NUMPART,
                 ')'
             ].join('');
@@ -33597,7 +33597,7 @@ const semver_1 = __nccwpck_require__(1383);
 const common_1 = __nccwpck_require__(9108);
 /* eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 const { t, src } = __nccwpck_require__(9523);
-const BUILDPART = '(\\+([\\d\\w]([+._\\-]?[\\d\\w]+)*))?';
+const BUILDPART = '(\\+([\\d\\w]([+._-]?[\\d\\w]+)*))?';
 function getPatternByBaseAndLevel(level, baseVersion) {
     switch (level) {
         case common_1.Level.MAJOR:
@@ -33613,7 +33613,7 @@ function getPatternByBaseAndLevel(level, baseVersion) {
         default:
             return new RegExp(`^${baseVersion.major}\\.` +
                 `${baseVersion.minor}\\.` +
-                `${baseVersion.patch}\\-` +
+                `${baseVersion.patch}-` +
                 `${level}\\.` +
                 `(${src[t.NUMERICIDENTIFIER]})` +
                 BUILDPART +

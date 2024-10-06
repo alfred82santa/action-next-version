@@ -15,9 +15,9 @@ const PEP440_VERSION_PATTERNS = [
   `(?:${NUMPART}(?:\\.${NUMPART})*)`, // release segment
   [
     '(?:', // pre-release
-    '[-_\\.]?',
+    '[-_.]?',
     '(?:(a|b|c|rc|alpha|beta|pre|preview))',
-    '[-_\\.]?',
+    '[-_.]?',
     NUMPART,
     ')'
   ].join(''),
@@ -26,17 +26,17 @@ const PEP440_VERSION_PATTERNS = [
     `(?:-${NUMPART})`,
     '|',
     '(?:',
-    '[-_\\.]?',
+    '[-_.]?',
     '(?:post|rev|r)',
-    '[-_\\.]?',
+    '[-_.]?',
     NUMPART,
     ')'
   ].join(''),
   [
     '(?:', // dev release
-    '[-_\\.]?',
+    '[-_.]?',
     'dev',
-    '[-_\\.]?',
+    '[-_.]?',
     NUMPART,
     ')?'
   ].join('')
@@ -63,7 +63,7 @@ function _buildPrereleasePrefixes(level: PrereleaseLevelNoDev): string[] {
   }
 }
 
-const BUILDPART = '(?:\\+(?:[\\d\\w](?:[+._\\-]?[\\d\\w]+)*))?'
+const BUILDPART = '(?:\\+(?:[\\d\\w](?:[+._-]?[\\d\\w]+)*))?'
 
 export function getPatternByBaseAndLevel(
   level: Level,
@@ -95,9 +95,9 @@ export function getPatternByBaseAndLevel(
       const prefixes = _buildPrereleasePrefixes(level)
       const pattern = [
         '(?:', // pre-release
-        '[-_\\.]?',
+        '[-_.]?',
         '(?:' + prefixes.join('|') + ')',
-        '[-_\\.]?',
+        '[-_.]?',
         NUMPART,
         ')'
       ].join('')
