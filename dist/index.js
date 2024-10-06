@@ -33234,7 +33234,7 @@ const core_1 = __nccwpck_require__(2186);
 function getActionInput() {
     const result = {
         baseVersion: (0, core_1.getInput)('version', { required: true }),
-        format: (0, core_1.getInput)('format', { required: true }),
+        format: (0, core_1.getInput)('versionFormat', { required: true }),
         level: (0, core_1.getInput)('level', { required: true }),
         releaseTagPattern: new RegExp((0, core_1.getInput)('releaseTagPattern', { required: true })),
         githubToken: (0, core_1.getInput)('token', { required: true })
