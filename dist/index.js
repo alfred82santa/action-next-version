@@ -33255,7 +33255,7 @@ function getActionInput() {
         throw new Error(`Invalid level ${result.level}`);
     return result;
 }
-function setActionOutput(value) {
+async function setActionOutput(value) {
     Object.entries(value).forEach(([k, v]) => (0, core_1.setOutput)(k, v));
     core_1.summary.addHeading(`Next version ${value.version}`);
     core_1.summary.addTable([
@@ -33268,6 +33268,7 @@ function setActionOutput(value) {
             v
         ])
     ]);
+    await core_1.summary.write();
 }
 
 
@@ -33430,7 +33431,7 @@ async function run() {
                 versionInfo = pep440.toVersionInfo(await pep440.nextRelease(config, octokit), inputData.build);
                 break;
         }
-        (0, action_1.setActionOutput)((0, common_1.mapVersionInfoToOutput)(versionInfo));
+        await (0, action_1.setActionOutput)((0, common_1.mapVersionInfoToOutput)(versionInfo));
     }
     catch (error) {
         // Fail the workflow run if an error occurs
