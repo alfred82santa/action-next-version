@@ -66,12 +66,6 @@ export async function nextRelease(
       )
       let lastRelease: SemVer | undefined = undefined
       try {
-        Array.fromAsync(
-          octokit.paginate.iterator(octokit.rest.repos.listReleases, {
-            owner: config.owner,
-            repo: config.repo
-          })
-        )
         lastRelease = (await getReleases(config, octokit))
           .filter(v => releaseSiblingPattern.test(v))
           .map(v => parse(v))

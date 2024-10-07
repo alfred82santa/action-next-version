@@ -33688,10 +33688,6 @@ async function nextRelease(config, octokit) {
             const releaseSiblingPattern = getPatternByBaseAndLevel(config.level, baseVersion);
             let lastRelease = undefined;
             try {
-                Array.fromAsync(octokit.paginate.iterator(octokit.rest.repos.listReleases, {
-                    owner: config.owner,
-                    repo: config.repo
-                }));
                 lastRelease = (await (0, github_1.getReleases)(config, octokit))
                     .filter(v => releaseSiblingPattern.test(v))
                     .map(v => (0, semver_1.parse)(v))
