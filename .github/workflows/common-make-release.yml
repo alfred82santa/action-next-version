@@ -64,7 +64,7 @@ jobs:
       - name: Creates or update minor release tag reference
         uses: rickstaa/action-create-tag@v1
         id: 'tag_minor_create'
-        if: '${{ !inputs.prereleaseLevel && inputs.moveReleasePointers }}'
+        if: '${{ !steps.next-version.outputs.isPrerelease && inputs.moveReleasePointers }}'
         with:
           tag: 'v${{ steps.next-version.outputs.baseReleaseMinor }}'
           force_push_tag: true
@@ -73,7 +73,7 @@ jobs:
       - name: Creates or update major release tag reference
         uses: rickstaa/action-create-tag@v1
         id: 'tag_major_create'
-        if: '${{ !inputs.prereleaseLevel && inputs.moveReleasePointers }}'
+        if: '${{ !steps.next-version.outputs.isPrerelease && inputs.moveReleasePointers }}'
         with:
           tag: 'v${{ steps.next-version.outputs.major }}'
           force_push_tag: true
