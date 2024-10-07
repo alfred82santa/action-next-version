@@ -9,6 +9,7 @@ on:
           develop branches and alpha on any else'
         type: choice
         options:
+          - automatic
           - production
           - rc
           - beta
@@ -36,6 +37,6 @@ jobs:
     secrets: inherit
     with:
       prereleaseLevel:
-        ${{ !inputs.prereleaseLevel && (startsWith(github.ref_name, 'release/') && 'rc' || github.ref_name == 'main' && 'beta' || 'aplha') ||  (inputs.prereleaseLevel != 'production' && inputs.prereleaseLevel) || '' }}
+        ${{ inputs.prereleaseLevel == 'automatic' && (startsWith(github.ref_name, 'release/') && 'rc' || github.ref_name == 'main' && 'beta' || 'aplha') ||  (inputs.prereleaseLevel != 'production' && inputs.prereleaseLevel) || '' }}
       moveReleasePointers: ${{ inputs.moveReleasePointers}}
       isLatest: ${{ inputs.isLatest }}

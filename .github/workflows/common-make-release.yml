@@ -57,7 +57,7 @@ jobs:
         with:
           prerelease: ${{ !!inputs.prereleaseLevel }}
           tag_name:
-            '${{ !!inputs.prereleaseLevel && steps.prerelease-version.outputs.version || steps.current-version.outputs.baseVersion }}'
+            'v${{ !!inputs.prereleaseLevel && steps.prerelease-version.outputs.version || steps.current-version.outputs.baseVersion }}'
           generate_release_notes: true
           make_latest: ${{ inputs.isLatest }}
 
