@@ -1,7 +1,12 @@
 import { compare, parse, SemVer } from 'semver'
 
 import { GitHub } from '@actions/github/lib/utils'
-import { Level, mapPrereleaseStrToLevel, VersionInfo } from './common'
+import {
+  Level,
+  mapPrereleaseStrToLevel,
+  RealLevel,
+  VersionInfo
+} from './common'
 import { Config } from './config'
 import { debug } from '@actions/core'
 import { getReleases } from './github'
@@ -12,7 +17,7 @@ const { t, src } = require('semver/internal/re')
 const BUILDPART = '(\\+([\\d\\w]([+._-]?[\\d\\w]+)*))?'
 
 export function getPatternByBaseAndLevel(
-  level: Level,
+  level: RealLevel,
   baseVersion: SemVer
 ): RegExp {
   switch (level) {
@@ -52,6 +57,8 @@ export async function nextRelease(
   if (!baseVersion) throw Error(`Invalid base version ${config.baseVersion}`)
 
   switch (config.level) {
+    case Level.NONE:
+      return baseVersion
     case Level.MAJOR:
       return baseVersion.inc('major')
     case Level.MINOR:
@@ -94,7 +101,7 @@ export function toVersionInfo(version: SemVer, build?: string): VersionInfo {
     minor: version.minor,
     patch: version.patch
   }
-  if (version.prerelease) {
+  if (version.prerelease && version.prerelease.length > 0) {
     result.prereleaseType = mapPrereleaseStrToLevel(
       version.prerelease[0] as string
     )

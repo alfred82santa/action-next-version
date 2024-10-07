@@ -55,16 +55,17 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
+          name: 'Release ${{ steps.next-version.outputs.version }}'
           prerelease: ${{ !!inputs.prereleaseLevel }}
           tag_name:
-            'v${{ !!inputs.prereleaseLevel && steps.next-version.outputs.version || steps.current-version.outputs.baseVersion }}'
+            'v${{ steps.next-version.outputs.version }}'
           generate_release_notes: true
           make_latest: ${{ inputs.isLatest }}
 
       - name: Creates or update minor release tag reference
         uses: rickstaa/action-create-tag@v1
         id: 'tag_minor_create'
-        if: '${{ !inputs.prereleaseLevel && inputs.moveReleasePointers }}'
+        if: '${{ !steps.next-version.outputs.isPrerelease && inputs.moveReleasePointers }}'
         with:
           tag: 'v${{ steps.next-version.outputs.baseReleaseMinor }}'
           force_push_tag: true
@@ -73,7 +74,7 @@ jobs:
       - name: Creates or update major release tag reference
         uses: rickstaa/action-create-tag@v1
         id: 'tag_major_create'
-        if: '${{ !inputs.prereleaseLevel && inputs.moveReleasePointers }}'
+        if: '${{ !steps.next-version.outputs.isPrerelease && inputs.moveReleasePointers }}'
         with:
           tag: 'v${{ steps.next-version.outputs.major }}'
           force_push_tag: true

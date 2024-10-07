@@ -6,6 +6,7 @@ export enum VersionFormat {
 }
 
 export enum Level {
+  NONE = 'none',
   MAJOR = 'major',
   MINOR = 'minor',
   PATCH = 'patch',
@@ -21,6 +22,12 @@ export type PrereleaseLevelNoDev =
   | Level.ALPHA
 
 export type PrereleaseLevel = PrereleaseLevelNoDev | Level.DEVELOPMENT
+
+export type RealLevel =
+  | PrereleaseLevel
+  | Level.MAJOR
+  | Level.MINOR
+  | Level.PATCH
 
 export interface VersionInfo {
   version: string

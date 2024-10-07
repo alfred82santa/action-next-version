@@ -3,6 +3,7 @@ import {
   Level,
   mapPrereleaseStrToLevel,
   PrereleaseLevelNoDev,
+  RealLevel,
   VersionInfo
 } from './common'
 import { Config } from './config'
@@ -68,7 +69,7 @@ function _buildPrereleasePrefixes(level: PrereleaseLevelNoDev): string[] {
 const BUILDPART = '(?:\\+(?:[\\d\\w](?:[+._-]?[\\d\\w]+)*))?'
 
 export function getPatternByBaseAndLevel(
-  level: Level,
+  level: RealLevel,
   baseVersion: Pep440Version
 ): RegExp {
   switch (level) {
@@ -124,6 +125,8 @@ export async function nextRelease(
   if (!baseVersion) throw Error(`Invalid base version ${config.baseVersion}`)
 
   switch (config.level) {
+    case Level.NONE:
+      return baseVersion
     case Level.MAJOR:
       return parse(inc(config.baseVersion, 'major'))!
     case Level.MINOR:
