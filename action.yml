@@ -1,4 +1,4 @@
-name: 'Next version'
+name: 'Next version action'
 description: 'Calculate new version of package'
 author: 'Alfred Santacatalina'
 
