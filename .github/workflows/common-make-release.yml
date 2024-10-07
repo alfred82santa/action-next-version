@@ -55,9 +55,10 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
+          name: 'Release ${{ steps.next-version.outputs.version }}'
           prerelease: ${{ !!inputs.prereleaseLevel }}
           tag_name:
-            'v${{ !!inputs.prereleaseLevel && steps.next-version.outputs.version || steps.current-version.outputs.baseVersion }}'
+            'v${{ steps.next-version.outputs.version }}'
           generate_release_notes: true
           make_latest: ${{ inputs.isLatest }}
 
