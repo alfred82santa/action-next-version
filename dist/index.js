@@ -33244,6 +33244,7 @@ function getActionInput() {
     if (build)
         result.build = build;
     if (![
+        common_1.Level.NONE,
         common_1.Level.MAJOR,
         common_1.Level.MINOR,
         common_1.Level.PATCH,
@@ -33290,6 +33291,7 @@ var VersionFormat;
 })(VersionFormat || (exports.VersionFormat = VersionFormat = {}));
 var Level;
 (function (Level) {
+    Level["NONE"] = "none";
     Level["MAJOR"] = "major";
     Level["MINOR"] = "minor";
     Level["PATCH"] = "patch";
@@ -33574,6 +33576,8 @@ async function nextRelease(config, octokit) {
     if (!baseVersion)
         throw Error(`Invalid base version ${config.baseVersion}`);
     switch (config.level) {
+        case common_1.Level.NONE:
+            return baseVersion;
         case common_1.Level.MAJOR:
             return (0, version_1.parse)((0, pep440_1.inc)(config.baseVersion, 'major'));
         case common_1.Level.MINOR:
@@ -33678,6 +33682,8 @@ async function nextRelease(config, octokit) {
     if (!baseVersion)
         throw Error(`Invalid base version ${config.baseVersion}`);
     switch (config.level) {
+        case common_1.Level.NONE:
+            return baseVersion;
         case common_1.Level.MAJOR:
             return baseVersion.inc('major');
         case common_1.Level.MINOR:

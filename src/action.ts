@@ -26,6 +26,7 @@ export function getActionInput(): Input {
 
   if (
     ![
+      Level.NONE,
       Level.MAJOR,
       Level.MINOR,
       Level.PATCH,
