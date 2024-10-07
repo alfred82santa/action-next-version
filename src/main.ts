@@ -13,22 +13,8 @@ import * as pep440 from './pep440'
 export async function run(): Promise<void> {
   try {
     const inputData = getActionInput()
-    const octokit = getOctokit(inputData.githubToken, {
-      log: {
-        debug: (msg: string): void => {
-          core.debug(msg)
-        },
-        info: (msg: string): void => {
-          core.debug(msg)
-        },
-        warn: (msg: string): void => {
-          core.debug(msg)
-        },
-        error: (msg: string): void => {
-          core.debug(msg)
-        }
-      }
-    })
+    const octokit = getOctokit(inputData.githubToken)
+
     const config = new Config(inputData)
 
     let versionInfo: VersionInfo
@@ -47,7 +33,7 @@ export async function run(): Promise<void> {
         break
     }
 
-    setActionOutput(mapVersionInfoToOutput(versionInfo))
+    await setActionOutput(mapVersionInfoToOutput(versionInfo))
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)

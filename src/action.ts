@@ -24,6 +24,18 @@ export function getActionInput(): Input {
   const build = getInput('build')
   if (build) result.build = build
 
+  if (
+    ![
+      Level.MAJOR,
+      Level.MINOR,
+      Level.PATCH,
+      Level.RELEASE_CANDIDATE,
+      Level.BETA,
+      Level.ALPHA,
+      Level.DEVELOPMENT
+    ].includes(result.level)
+  )
+    throw new Error(`Invalid level ${result.level}`)
   return result
 }
 
@@ -41,17 +53,18 @@ export interface Output {
   build?: string
 }
 
-export function setActionOutput(value: Output): void {
+export async function setActionOutput(value: Output): Promise<void> {
   Object.entries(value).forEach(([k, v]) => setOutput(k, v))
   summary.addHeading(`Next version ${value.version}`)
   summary.addTable([
     [
-      { data: '**Output field**', header: true },
-      { data: '**Value**', header: true }
+      { data: 'Output field', header: true },
+      { data: 'Value', header: true }
     ],
     ...Object.entries(value).map(([k, v]) => [
-      { data: `**${k}**`, header: true },
-      v
+      { data: `${k}`, header: true },
+      `${v}`
     ])
   ])
+  await summary.write()
 }

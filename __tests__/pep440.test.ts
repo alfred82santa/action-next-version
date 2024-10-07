@@ -9,7 +9,8 @@ import { GitHub } from '@actions/github/lib/utils'
 import { Config } from '../src/config'
 import { getOctokit } from '@actions/github'
 import { parse } from '@renovatebot/pep440/lib/version'
-import { _buildRelease } from './_utils'
+import * as github from '../src/github'
+import { context } from '@actions/github'
 
 describe('PEP440: getPatternByBaseAndLevel', () => {
   it('Major pattern', async () => {
@@ -63,6 +64,9 @@ describe('PEP440: nextRelease', () => {
   let octokit: InstanceType<typeof GitHub>
   beforeEach(() => {
     octokit = jest.mocked(getOctokit('test'))
+    jest
+      .spyOn(context, 'repo', 'get')
+      .mockReturnValue({ repo: 'testrepo', owner: 'testowner' })
   })
 
   it('Invalid base version', async () => {
@@ -101,22 +105,18 @@ describe('PEP440: nextRelease', () => {
   })
 
   it('Next release candidate', async () => {
-    jest.spyOn(octokit.rest.repos, 'listReleases').mockResolvedValue({
-      headers: {},
-      status: 200,
-      url: '',
-      data: [
-        _buildRelease('invalidVersion'),
-        _buildRelease('v3.7.43-rc.3'),
-        _buildRelease('v3.7.44-rc.9'),
-        _buildRelease('v3.7.43rc4'),
-        _buildRelease('v3.7.43-rc.2'),
-        _buildRelease('v3.7.43-beta.12'),
-        _buildRelease('v3.7.43-alpha.22'),
-        _buildRelease('v3.7.43-dev.32'),
-        _buildRelease(null)
-      ]
-    })
+    jest
+      .spyOn(github, 'getReleases')
+      .mockResolvedValue([
+        'invalidVersion',
+        '3.7.43-rc.3',
+        '3.7.44-rc.9',
+        '3.7.43rc4',
+        '3.7.43-rc.2',
+        '3.7.43-beta.12',
+        '3.7.43-alpha.22',
+        '3.7.43-dev.32'
+      ])
     await expect(
       nextRelease(
         new Config({ baseVersion: '3.7.43', level: Level.RELEASE_CANDIDATE }),
@@ -126,20 +126,17 @@ describe('PEP440: nextRelease', () => {
   })
 
   it('Next release candidate: no previous', async () => {
-    jest.spyOn(octokit.rest.repos, 'listReleases').mockResolvedValue({
-      headers: {},
-      status: 200,
-      url: '',
-      data: [
-        _buildRelease('v3.7.43-rc.3'),
-        _buildRelease('v3.7.44-rc.9'),
-        _buildRelease('v3.7.43-rc.4'),
-        _buildRelease('v3.7.43-rc.2'),
-        _buildRelease('v3.7.43-beta.12'),
-        _buildRelease('v3.7.43-alpha.22'),
-        _buildRelease('v3.7.43-dev.32')
-      ]
-    })
+    jest
+      .spyOn(github, 'getReleases')
+      .mockResolvedValue([
+        '3.7.43-rc.3',
+        '3.7.44-rc.9',
+        '3.7.43-rc.4',
+        '3.7.43-rc.2',
+        '3.7.43-beta.12',
+        '3.7.43-alpha.22',
+        '3.7.43-dev.32'
+      ])
     await expect(
       nextRelease(
         new Config({ baseVersion: '3.7.48', level: Level.RELEASE_CANDIDATE }),
@@ -149,24 +146,21 @@ describe('PEP440: nextRelease', () => {
   })
 
   it('Beta pattern', async () => {
-    jest.spyOn(octokit.rest.repos, 'listReleases').mockResolvedValue({
-      headers: {},
-      status: 200,
-      url: '',
-      data: [
-        _buildRelease('v3.7.43-rc.3'),
-        _buildRelease('v3.7.44-rc.9'),
-        _buildRelease('v3.7.43-rc.4'),
-        _buildRelease('v3.7.43-rc.2'),
-        _buildRelease('v3.7.43-beta.14'),
-        _buildRelease('v3.7.43-beta.12'),
-        _buildRelease('v3.7.43-beta.13'),
-        _buildRelease('v3.7.43b116'),
-        _buildRelease('v3.7.43-beta.15'),
-        _buildRelease('v3.7.43-alpha.22'),
-        _buildRelease('v3.7.43-dev.32')
-      ]
-    })
+    jest
+      .spyOn(github, 'getReleases')
+      .mockResolvedValue([
+        '3.7.43-rc.3',
+        '3.7.44-rc.9',
+        '3.7.43-rc.4',
+        '3.7.43-rc.2',
+        '3.7.43-beta.14',
+        '3.7.43-beta.12',
+        '3.7.43-beta.13',
+        '3.7.43b116',
+        '3.7.43-beta.15',
+        '3.7.43-alpha.22',
+        '3.7.43-dev.32'
+      ])
     await expect(
       nextRelease(
         new Config({ baseVersion: '3.7.43', level: Level.BETA }),
@@ -176,24 +170,21 @@ describe('PEP440: nextRelease', () => {
   })
 
   it('Beta pattern: no previous', async () => {
-    jest.spyOn(octokit.rest.repos, 'listReleases').mockResolvedValue({
-      headers: {},
-      status: 200,
-      url: '',
-      data: [
-        _buildRelease('v3.7.43-rc.3'),
-        _buildRelease('v3.7.44-rc.9'),
-        _buildRelease('v3.7.43-rc.4'),
-        _buildRelease('v3.7.43-rc.2'),
-        _buildRelease('v3.7.43-beta.14'),
-        _buildRelease('v3.7.43-beta.12'),
-        _buildRelease('v3.7.43-beta.13'),
-        _buildRelease('v3.7.43-beta.116'),
-        _buildRelease('v3.7.43-beta.15'),
-        _buildRelease('v3.7.43-alpha.22'),
-        _buildRelease('v3.7.43-dev.32')
-      ]
-    })
+    jest
+      .spyOn(github, 'getReleases')
+      .mockResolvedValue([
+        '3.7.43-rc.3',
+        '3.7.44-rc.9',
+        '3.7.43-rc.4',
+        '3.7.43-rc.2',
+        '3.7.43-beta.14',
+        '3.7.43-beta.12',
+        '3.7.43-beta.13',
+        '3.7.43-beta.116',
+        '3.7.43-beta.15',
+        '3.7.43-alpha.22',
+        '3.7.43-dev.32'
+      ])
     await expect(
       nextRelease(
         new Config({ baseVersion: '3.7.48', level: Level.BETA }),
@@ -203,24 +194,21 @@ describe('PEP440: nextRelease', () => {
   })
 
   it('Next alpha', async () => {
-    jest.spyOn(octokit.rest.repos, 'listReleases').mockResolvedValue({
-      headers: {},
-      status: 200,
-      url: '',
-      data: [
-        _buildRelease('v3.7.43-rc.3'),
-        _buildRelease('v3.7.44-rc.9'),
-        _buildRelease('v3.7.43-rc.4'),
-        _buildRelease('v3.7.43-rc.2'),
-        _buildRelease('v3.7.43-alpha.14'),
-        _buildRelease('v3.7.43-alpha.12'),
-        _buildRelease('v3.7.43-alpha.13'),
-        _buildRelease('v3.7.43-alpha.116'),
-        _buildRelease('v3.7.43-alpha.15'),
-        _buildRelease('v3.7.43-beta.22'),
-        _buildRelease('v3.7.43-dev.32')
-      ]
-    })
+    jest
+      .spyOn(github, 'getReleases')
+      .mockResolvedValue([
+        '3.7.43-rc.3',
+        '3.7.44-rc.9',
+        '3.7.43-rc.4',
+        '3.7.43-rc.2',
+        '3.7.43-alpha.14',
+        '3.7.43-alpha.12',
+        '3.7.43-alpha.13',
+        '3.7.43-alpha.116',
+        '3.7.43-alpha.15',
+        '3.7.43-beta.22',
+        '3.7.43-dev.32'
+      ])
     await expect(
       nextRelease(
         new Config({ baseVersion: '3.7.43', level: Level.ALPHA }),
@@ -230,24 +218,21 @@ describe('PEP440: nextRelease', () => {
   })
 
   it('Next alpha: no previous', async () => {
-    jest.spyOn(octokit.rest.repos, 'listReleases').mockResolvedValue({
-      headers: {},
-      status: 200,
-      url: '',
-      data: [
-        _buildRelease('v3.7.43-rc.3'),
-        _buildRelease('v3.7.44-rc.9'),
-        _buildRelease('v3.7.43-rc.4'),
-        _buildRelease('v3.7.43-rc.2'),
-        _buildRelease('v3.7.43-alpha.14'),
-        _buildRelease('v3.7.43-alpha.12'),
-        _buildRelease('v3.7.43-alpha.13'),
-        _buildRelease('v3.7.43-alpha.116'),
-        _buildRelease('v3.7.43-alpha.15'),
-        _buildRelease('v3.7.43-beta.22'),
-        _buildRelease('v3.7.43-dev.32')
-      ]
-    })
+    jest
+      .spyOn(github, 'getReleases')
+      .mockResolvedValue([
+        '3.7.43-rc.3',
+        '3.7.44-rc.9',
+        '3.7.43-rc.4',
+        '3.7.43-rc.2',
+        '3.7.43-alpha.14',
+        '3.7.43-alpha.12',
+        '3.7.43-alpha.13',
+        '3.7.43-alpha.116',
+        '3.7.43-alpha.15',
+        '3.7.43-beta.22',
+        '3.7.43-dev.32'
+      ])
     await expect(
       nextRelease(
         new Config({ baseVersion: '3.7.48', level: Level.ALPHA }),
@@ -257,24 +242,21 @@ describe('PEP440: nextRelease', () => {
   })
 
   it('Next development', async () => {
-    jest.spyOn(octokit.rest.repos, 'listReleases').mockResolvedValue({
-      headers: {},
-      status: 200,
-      url: '',
-      data: [
-        _buildRelease('v3.7.43-rc.3'),
-        _buildRelease('v3.7.44-rc.9'),
-        _buildRelease('v3.7.43-rc.4'),
-        _buildRelease('v3.7.43-rc.2'),
-        _buildRelease('v3.7.43-dev.14'),
-        _buildRelease('v3.7.43-dev.12'),
-        _buildRelease('v3.7.43-dev.13'),
-        _buildRelease('v3.7.43-dev.116'),
-        _buildRelease('v3.7.43-dev.15'),
-        _buildRelease('v3.7.43-beta.22'),
-        _buildRelease('v3.7.43-alpha.32')
-      ]
-    })
+    jest
+      .spyOn(github, 'getReleases')
+      .mockResolvedValue([
+        '3.7.43-rc.3',
+        '3.7.44-rc.9',
+        '3.7.43-rc.4',
+        '3.7.43-rc.2',
+        '3.7.43-dev.14',
+        '3.7.43-dev.12',
+        '3.7.43-dev.13',
+        '3.7.43-dev.116',
+        '3.7.43-dev.15',
+        '3.7.43-beta.22',
+        '3.7.43-alpha.32'
+      ])
     await expect(
       nextRelease(
         new Config({ baseVersion: '3.7.43', level: Level.DEVELOPMENT }),
@@ -284,20 +266,17 @@ describe('PEP440: nextRelease', () => {
   })
 
   it('Next development: no number', async () => {
-    jest.spyOn(octokit.rest.repos, 'listReleases').mockResolvedValue({
-      headers: {},
-      status: 200,
-      url: '',
-      data: [
-        _buildRelease('v3.7.43-rc.3'),
-        _buildRelease('v3.7.44-rc.9'),
-        _buildRelease('v3.7.43-rc.4'),
-        _buildRelease('v3.7.43-rc.2'),
-        _buildRelease('v3.7.43-dev'),
-        _buildRelease('v3.7.43-beta.22'),
-        _buildRelease('v3.7.43-alpha.32')
-      ]
-    })
+    jest
+      .spyOn(github, 'getReleases')
+      .mockResolvedValue([
+        '3.7.43-rc.3',
+        '3.7.44-rc.9',
+        '3.7.43-rc.4',
+        '3.7.43-rc.2',
+        '3.7.43-dev',
+        '3.7.43-beta.22',
+        '3.7.43-alpha.32'
+      ])
     await expect(
       nextRelease(
         new Config({ baseVersion: '3.7.43', level: Level.DEVELOPMENT }),
@@ -307,24 +286,21 @@ describe('PEP440: nextRelease', () => {
   })
 
   it('Next development: no previous', async () => {
-    jest.spyOn(octokit.rest.repos, 'listReleases').mockResolvedValue({
-      headers: {},
-      status: 200,
-      url: '',
-      data: [
-        _buildRelease('v3.7.43-rc.3'),
-        _buildRelease('v3.7.44-rc.9'),
-        _buildRelease('v3.7.43-rc.4'),
-        _buildRelease('v3.7.43-rc.2'),
-        _buildRelease('v3.7.43-dev.14'),
-        _buildRelease('v3.7.43-dev.12'),
-        _buildRelease('v3.7.43-dev.13'),
-        _buildRelease('v3.7.43-dev.116'),
-        _buildRelease('v3.7.43-dev.15'),
-        _buildRelease('v3.7.43-beta.22'),
-        _buildRelease('v3.7.43-alpha.32')
-      ]
-    })
+    jest
+      .spyOn(github, 'getReleases')
+      .mockResolvedValue([
+        '3.7.43-rc.3',
+        '3.7.44-rc.9',
+        '3.7.43-rc.4',
+        '3.7.43-rc.2',
+        '3.7.43-dev.14',
+        '3.7.43-dev.12',
+        '3.7.43-dev.13',
+        '3.7.43-dev.116',
+        '3.7.43-dev.15',
+        '3.7.43-beta.22',
+        '3.7.43-alpha.32'
+      ])
     await expect(
       nextRelease(
         new Config({ baseVersion: '3.7.48', level: Level.DEVELOPMENT }),

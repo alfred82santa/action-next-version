@@ -4,6 +4,7 @@ import { GitHub } from '@actions/github/lib/utils'
 import { Level, mapPrereleaseStrToLevel, VersionInfo } from './common'
 import { Config } from './config'
 import { debug } from '@actions/core'
+import { getReleases } from './github'
 
 /* eslint-disable-next-line @typescript-eslint/no-require-imports */
 const { t, src } = require('semver/internal/re')
@@ -64,14 +65,7 @@ export async function nextRelease(
       )
       let lastRelease: SemVer | undefined = undefined
       try {
-        lastRelease = (await octokit.rest.repos.listReleases()).data
-          .filter(release => release.name && release.name.length > 0)
-          .map(release => {
-            const match = config.releaseTagPattern.exec(release.name!)
-            if (match == null) return null
-            return match[1]
-          })
-          .filter(v => v != null)
+        lastRelease = (await getReleases(config, octokit))
           .filter(v => releaseSiblingPattern.test(v))
           .map(v => parse(v))
           .filter(v => v != null)
@@ -104,7 +98,7 @@ export function toVersionInfo(version: SemVer, build?: string): VersionInfo {
     result.prereleaseType = mapPrereleaseStrToLevel(
       version.prerelease[0] as string
     )
-    result.prereleaseNumber = version.prerelease[0] as number
+    result.prereleaseNumber = version.prerelease[1] as number
   }
   if (build) {
     result.build = build

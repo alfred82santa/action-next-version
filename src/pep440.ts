@@ -9,6 +9,7 @@ import { Config } from './config'
 import { compare, inc, Pep440Version } from '@renovatebot/pep440'
 import { parse, stringify } from '@renovatebot/pep440/lib/version'
 import { debug } from '@actions/core'
+import { getReleases } from './github'
 
 const NUMPART = '(?:0|[1-9][0-9]*)'
 const PEP440_VERSION_PATTERNS = [
@@ -136,14 +137,7 @@ export async function nextRelease(
       )
       let lastRelease: Pep440Version | undefined = undefined
       try {
-        lastRelease = (await octokit.rest.repos.listReleases()).data
-          .filter(release => release.name && release.name.length > 0)
-          .map(release => {
-            const match = config.releaseTagPattern.exec(release.name!)
-            if (match == null) return null
-            return match[1]
-          })
-          .filter(v => v != null)
+        lastRelease = (await getReleases(config, octokit))
           .filter(v => releaseSiblingPattern.test(v))
           .map(v => parse(v))
           .filter(v => v != null)
