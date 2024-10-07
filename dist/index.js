@@ -33671,7 +33671,10 @@ async function nextRelease(config, octokit) {
             const releaseSiblingPattern = getPatternByBaseAndLevel(config.level, baseVersion);
             let lastRelease = undefined;
             try {
-                lastRelease = (await octokit.rest.repos.listReleases()).data
+                lastRelease = (await octokit.rest.repos.listReleases({
+                    owner: 'alfred82santa',
+                    repo: 'action-next-version'
+                })).data
                     .filter(release => release.name && release.name.length > 0)
                     .map(release => {
                     const match = config.releaseTagPattern.exec(release.name);
