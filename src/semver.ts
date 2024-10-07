@@ -5,6 +5,7 @@ import { Level, mapPrereleaseStrToLevel, VersionInfo } from './common'
 import { Config } from './config'
 import { debug } from '@actions/core'
 import { arrayFromAsync } from './utils'
+import { getReleases } from './github'
 
 /* eslint-disable-next-line @typescript-eslint/no-require-imports */
 const { t, src } = require('semver/internal/re')
@@ -71,23 +72,7 @@ export async function nextRelease(
             repo: config.repo
           })
         )
-        lastRelease = (
-          await arrayFromAsync(
-            octokit.paginate.iterator(octokit.rest.repos.listReleases, {
-              owner: config.owner,
-              repo: config.repo
-            })
-          )
-        )
-          .map(resp => resp.data)
-          .flat()
-          .filter(release => release.name && release.name.length > 0)
-          .map(release => {
-            const match = config.releaseTagPattern.exec(release.name!)
-            if (match == null) return null
-            return match[1]
-          })
-          .filter(v => v != null)
+        lastRelease = (await getReleases(config, octokit))
           .filter(v => releaseSiblingPattern.test(v))
           .map(v => parse(v))
           .filter(v => v != null)
