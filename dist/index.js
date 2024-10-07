@@ -33722,7 +33722,7 @@ function toVersionInfo(version, build) {
         minor: version.minor,
         patch: version.patch
     };
-    if (version.prerelease) {
+    if (version.prerelease && version.prerelease.length > 0) {
         result.prereleaseType = (0, common_1.mapPrereleaseStrToLevel)(version.prerelease[0]);
         result.prereleaseNumber = version.prerelease[1];
     }

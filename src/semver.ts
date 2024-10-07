@@ -101,7 +101,7 @@ export function toVersionInfo(version: SemVer, build?: string): VersionInfo {
     minor: version.minor,
     patch: version.patch
   }
-  if (version.prerelease) {
+  if (version.prerelease && version.prerelease.length > 0) {
     result.prereleaseType = mapPrereleaseStrToLevel(
       version.prerelease[0] as string
     )
