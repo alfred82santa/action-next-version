@@ -33396,6 +33396,7 @@ const config_1 = __nccwpck_require__(2973);
 const common_1 = __nccwpck_require__(5026);
 const semver = __importStar(__nccwpck_require__(1475));
 const pep440 = __importStar(__nccwpck_require__(936));
+const plugin_rest_endpoint_methods_1 = __nccwpck_require__(4935);
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -33418,7 +33419,7 @@ async function run() {
                     core.debug(msg);
                 }
             }
-        });
+        }, plugin_rest_endpoint_methods_1.restEndpointMethods);
         const config = new config_1.Config(inputData);
         let versionInfo;
         switch (inputData.format) {

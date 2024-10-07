@@ -32,7 +32,8 @@ permissions:
   contents: write
 
 jobs:
-  publish-packages:
+  make-release:
+    name: Make release
     uses: ./.github/workflows/common-make-release.yml
     secrets: inherit
     with:
