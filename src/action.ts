@@ -56,7 +56,7 @@ export interface Output {
 
 export async function setActionOutput(value: Output): Promise<void> {
   Object.entries(value)
-    .map(([k, v]) => [k, typeof v === 'boolean' ? (v && 1) || 0 : v])
+    .filter(([k, v]) => typeof v !== 'boolean' || v)
     .forEach(([k, v]) => setOutput(k, v))
   summary.addHeading(`Next version ${value.version}`)
   summary.addTable([
