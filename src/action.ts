@@ -55,7 +55,9 @@ export interface Output {
 }
 
 export async function setActionOutput(value: Output): Promise<void> {
-  Object.entries(value).forEach(([k, v]) => setOutput(k, v))
+  Object.entries(value)
+    .map(([k, v]) => [k, v instanceof Boolean ? (v && 1) || 0 : v])
+    .forEach(([k, v]) => setOutput(k, v))
   summary.addHeading(`Next version ${value.version}`)
   summary.addTable([
     [

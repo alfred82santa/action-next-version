@@ -33257,7 +33257,9 @@ function getActionInput() {
     return result;
 }
 async function setActionOutput(value) {
-    Object.entries(value).forEach(([k, v]) => (0, core_1.setOutput)(k, v));
+    Object.entries(value)
+        .map(([k, v]) => [k, v instanceof Boolean ? (v && 1) || 0 : v])
+        .forEach(([k, v]) => (0, core_1.setOutput)(k, v));
     core_1.summary.addHeading(`Next version ${value.version}`);
     core_1.summary.addTable([
         [
