@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: Common make release
 
 on:
   workflow_call:
@@ -24,7 +24,7 @@ permissions:
 
 jobs:
   make-release:
-    name: TypeScript Tests
+    name: Make release
     runs-on: ubuntu-latest
 
     steps:
@@ -39,13 +39,13 @@ jobs:
           node-version-file: .node-version
           cache: npm
 
-      - name: Current version
+      - name: Get current version
         id: current-version
         run: |
           echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
 
-      - name: Calculate prerelease version
-        id: prerelease-version
+      - name: Calculate next version
+        id: next-version
         uses: ./
         with:
           version: ${{ steps.current-version.outputs.version }}
@@ -57,7 +57,7 @@ jobs:
         with:
           prerelease: ${{ !!inputs.prereleaseLevel }}
           tag_name:
-            'v${{ !!inputs.prereleaseLevel && steps.prerelease-version.outputs.version || steps.current-version.outputs.baseVersion }}'
+            'v${{ !!inputs.prereleaseLevel && steps.next-version.outputs.version || steps.current-version.outputs.baseVersion }}'
           generate_release_notes: true
           make_latest: ${{ inputs.isLatest }}
 

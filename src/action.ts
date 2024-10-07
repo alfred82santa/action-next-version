@@ -24,6 +24,18 @@ export function getActionInput(): Input {
   const build = getInput('build')
   if (build) result.build = build
 
+  if (
+    ![
+      Level.MAJOR,
+      Level.MINOR,
+      Level.PATCH,
+      Level.RELEASE_CANDIDATE,
+      Level.BETA,
+      Level.ALPHA,
+      Level.DEVELOPMENT
+    ].includes(result.level)
+  )
+    throw new Error(`Invalid level ${result.level}`)
   return result
 }
 

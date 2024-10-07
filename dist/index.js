@@ -33231,6 +33231,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getActionInput = getActionInput;
 exports.setActionOutput = setActionOutput;
 const core_1 = __nccwpck_require__(7484);
+const common_1 = __nccwpck_require__(5026);
 function getActionInput() {
     const result = {
         baseVersion: (0, core_1.getInput)('version', { required: true }),
@@ -33242,6 +33243,16 @@ function getActionInput() {
     const build = (0, core_1.getInput)('build');
     if (build)
         result.build = build;
+    if (![
+        common_1.Level.MAJOR,
+        common_1.Level.MINOR,
+        common_1.Level.PATCH,
+        common_1.Level.RELEASE_CANDIDATE,
+        common_1.Level.BETA,
+        common_1.Level.ALPHA,
+        common_1.Level.DEVELOPMENT
+    ].includes(result.level))
+        throw new Error(`Invalid level ${result.level}`);
     return result;
 }
 function setActionOutput(value) {
