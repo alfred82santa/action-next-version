@@ -33257,7 +33257,9 @@ function getActionInput() {
     return result;
 }
 async function setActionOutput(value) {
-    Object.entries(value).forEach(([k, v]) => (0, core_1.setOutput)(k, v));
+    Object.entries(value)
+        .filter(([, v]) => typeof v !== 'boolean' || v)
+        .forEach(([k, v]) => (0, core_1.setOutput)(k, v));
     core_1.summary.addHeading(`Next version ${value.version}`);
     core_1.summary.addTable([
         [
@@ -33722,7 +33724,7 @@ function toVersionInfo(version, build) {
         minor: version.minor,
         patch: version.patch
     };
-    if (version.prerelease) {
+    if (version.prerelease && version.prerelease.length > 0) {
         result.prereleaseType = (0, common_1.mapPrereleaseStrToLevel)(version.prerelease[0]);
         result.prereleaseNumber = version.prerelease[1];
     }
