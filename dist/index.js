@@ -33618,7 +33618,7 @@ exports.toVersionInfo = toVersionInfo;
 const semver_1 = __nccwpck_require__(1383);
 const common_1 = __nccwpck_require__(9108);
 const core_1 = __nccwpck_require__(2186);
-/* eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+/* eslint-disable-next-line @typescript-eslint/no-require-imports */
 const { t, src } = __nccwpck_require__(9523);
 const BUILDPART = '(\\+([\\d\\w]([+._-]?[\\d\\w]+)*))?';
 function getPatternByBaseAndLevel(level, baseVersion) {
@@ -35622,7 +35622,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
  * The entrypoint for the action.
  */
 const main_1 = __nccwpck_require__(399);
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
 (0, main_1.run)();
 
 })();
