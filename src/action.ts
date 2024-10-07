@@ -53,7 +53,7 @@ export interface Output {
   build?: string
 }
 
-export function setActionOutput(value: Output): void {
+export async function setActionOutput(value: Output): Promise<void> {
   Object.entries(value).forEach(([k, v]) => setOutput(k, v))
   summary.addHeading(`Next version ${value.version}`)
   summary.addTable([
@@ -66,4 +66,5 @@ export function setActionOutput(value: Output): void {
       v
     ])
   ])
+  await summary.write()
 }

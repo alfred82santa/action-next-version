@@ -53,7 +53,7 @@ export async function run(): Promise<void> {
         break
     }
 
-    setActionOutput(mapVersionInfoToOutput(versionInfo))
+    await setActionOutput(mapVersionInfoToOutput(versionInfo))
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)
