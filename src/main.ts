@@ -1,5 +1,10 @@
 import * as core from '@actions/core'
-import { wait } from './wait'
+import { getActionInput, setActionOutput } from './action'
+import { getOctokit } from '@actions/github'
+import { Config } from './config'
+import { mapVersionInfoToOutput, VersionFormat, VersionInfo } from './common'
+import * as semver from './semver'
+import * as pep440 from './pep440'
 
 /**
  * The main function for the action.
@@ -7,18 +12,42 @@ import { wait } from './wait'
  */
 export async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
+    const inputData = getActionInput()
+    const octokit = getOctokit(inputData.githubToken, {
+      log: {
+        debug: (msg: string): void => {
+          core.debug(msg)
+        },
+        info: (msg: string): void => {
+          core.debug(msg)
+        },
+        warn: (msg: string): void => {
+          core.debug(msg)
+        },
+        error: (msg: string): void => {
+          core.debug(msg)
+        }
+      }
+    })
+    const config = new Config(inputData)
 
-    // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.debug(`Waiting ${ms} milliseconds ...`)
+    let versionInfo: VersionInfo
+    switch (inputData.format) {
+      case VersionFormat.SEMVER:
+        versionInfo = semver.toVersionInfo(
+          await semver.nextRelease(config, octokit),
+          inputData.build
+        )
+        break
+      case VersionFormat.PEP440:
+        versionInfo = pep440.toVersionInfo(
+          await pep440.nextRelease(config, octokit),
+          inputData.build
+        )
+        break
+    }
 
-    // Log the current timestamp, wait, then log the new timestamp
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
-
-    // Set outputs for other workflow steps to use
-    core.setOutput('time', new Date().toTimeString())
+    setActionOutput(mapVersionInfoToOutput(versionInfo))
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)

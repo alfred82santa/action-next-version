@@ -1,0 +1,77 @@
+name: Continuous Integration
+
+on:
+  workflow_call:
+    inputs:
+      prereleaseLevel:
+        description: 'Prerelease level: rc, beta, alpha, dev'
+        type: string
+
+      moveReleasePointers:
+        description:
+          'For stable releases, this flag indicates that major and minor version
+          release tags must be move to new one'
+        type: boolean
+        default: true
+
+      isLatest:
+        description: 'Whether release must be flagged as latest'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  make-release:
+    name: TypeScript Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        id: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Current version
+        id: current-version
+        run: |
+          echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Calculate prerelease version
+        id: prerelease-version
+        uses: ./
+        with:
+          version: ${{ steps.current-version.outputs.version }}
+          level: ${{ inputs.prereleaseLevel }}
+          versionFormat: 'semver'
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          prerelease: ${{ !!inputs.prereleaseLevel }}
+          tag_name:
+            '${{ !!inputs.prereleaseLevel && steps.prerelease-version.outputs.version || steps.current-version.outputs.baseVersion }}'
+          generate_release_notes: true
+          make_latest: ${{ inputs.isLatest }}
+
+      - uses: rickstaa/action-create-tag@v1
+        id: 'tag_minor_create'
+        if: '${{ !inputs.prereleaseLevel && inputs.moveReleasePointers }}'
+        with:
+          tag: 'v${{ steps.current-version.outputs.baseReleaseMinor }}'
+          force_push_tag: true
+          message: 'Release ${{ steps.current-version.outputs.baseVersion }}'
+
+      - uses: rickstaa/action-create-tag@v1
+        id: 'tag_major_create'
+        with:
+          tag: 'v${{ steps.current-version.outputs.major }}'
+          force_push_tag: true
+          message: 'Release ${{ steps.current-version.outputs.baseVersion }}'

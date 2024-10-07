@@ -1,27 +1,28 @@
 {
-  "name": "typescript-action",
-  "description": "GitHub Actions TypeScript template",
-  "version": "0.0.0",
-  "author": "",
-  "private": true,
-  "homepage": "https://github.com/actions/typescript-action",
+  "name": "action-next-version",
+  "description": "Action Next Version",
+  "version": "1.0.0",
+  "author": "Alfred Santacatalina<alfred82santa@gmail.com>",
+  "private": false,
+  "homepage": "https://github.com/alfred82santa/action-next-version",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/alfred82santa/action-next-version.git"
   },
   "bugs": {
-    "url": "https://github.com/actions/typescript-action/issues"
+    "url": "https://github.com/alfred82santa/action-next-version/issues"
   },
   "keywords": [
     "actions",
     "node",
+    "version",
     "setup"
   ],
   "exports": {
     ".": "./dist/index.js"
   },
   "engines": {
-    "node": ">=21"
+    "node": ">=20"
   },
   "scripts": {
     "bundle": "npm run format:write && npm run package",
@@ -29,13 +30,13 @@
     "coverage": "npx make-coverage-badge --output-path ./badges/coverage.svg",
     "format:write": "npx prettier --write .",
     "format:check": "npx prettier --check .",
-    "lint": "npx eslint . -c ./.github/linters/.eslintrc.yml",
+    "lint": "npx eslint . -c ./.github/linters/eslint.config.mjs",
     "package": "npx ncc build src/index.ts -o dist --source-map --license licenses.txt",
     "package:watch": "npm run package -- --watch",
     "test": "npx jest",
     "all": "npm run format:write && npm run lint && npm run test && npm run coverage && npm run package"
   },
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
   "jest": {
     "preset": "ts-jest",
     "verbose": true,
@@ -66,12 +67,18 @@
     ]
   },
   "dependencies": {
-    "@actions/core": "^1.11.0"
+    "@actions/core": "^1.11.0",
+    "@actions/github": "^6.0.0",
+    "@eslint/config-array": "^0.18.0",
+    "@eslint/object-schema": "^2.1.4",
+    "@renovatebot/pep440": "^3.0.20",
+    "semver": "^7.6.3"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.13",
     "@types/node": "^22.5.5",
+    "@types/semver": "^7.5.8",
     "@typescript-eslint/eslint-plugin": "^8.6.0",
     "@typescript-eslint/parser": "^8.6.0",
     "@vercel/ncc": "^0.38.1",
