@@ -62,8 +62,8 @@ export async function setActionOutput(value: Output): Promise<void> {
       { data: 'Value', header: true }
     ],
     ...Object.entries(value).map(([k, v]) => [
-      { data: `${k.toString()}`, header: true },
-      v
+      { data: `${k}`, header: true },
+      `${v}`
     ])
   ])
   await summary.write()

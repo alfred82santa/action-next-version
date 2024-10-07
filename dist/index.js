@@ -33264,8 +33264,8 @@ async function setActionOutput(value) {
             { data: 'Value', header: true }
         ],
         ...Object.entries(value).map(([k, v]) => [
-            { data: `${k.toString()}`, header: true },
-            v
+            { data: `${k}`, header: true },
+            `${v}`
         ])
     ]);
     await core_1.summary.write();
