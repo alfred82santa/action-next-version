@@ -33739,7 +33739,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.arrayFromAsync = arrayFromAsync;
 async function arrayFromAsync(it) {
     const result = [];
-    for await (let a of it) {
+    for await (const a of it) {
         result.push(a);
     }
     return result;

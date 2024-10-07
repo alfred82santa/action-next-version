@@ -9,7 +9,6 @@ import { Config } from './config'
 import { compare, inc, Pep440Version } from '@renovatebot/pep440'
 import { parse, stringify } from '@renovatebot/pep440/lib/version'
 import { debug } from '@actions/core'
-import { arrayFromAsync } from './utils'
 import { getReleases } from './github'
 
 const NUMPART = '(?:0|[1-9][0-9]*)'

@@ -1,7 +1,6 @@
 import { GitHub } from '@actions/github/lib/utils'
 import { Config } from './config'
 import { arrayFromAsync } from './utils'
-import type { components } from '@octokit/openapi-types/types'
 
 export async function getReleases(
   config: Config,

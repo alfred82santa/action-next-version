@@ -4,7 +4,6 @@ import { GitHub } from '@actions/github/lib/utils'
 import { Level, mapPrereleaseStrToLevel, VersionInfo } from './common'
 import { Config } from './config'
 import { debug } from '@actions/core'
-import { arrayFromAsync } from './utils'
 import { getReleases } from './github'
 
 /* eslint-disable-next-line @typescript-eslint/no-require-imports */

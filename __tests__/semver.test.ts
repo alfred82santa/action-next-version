@@ -9,7 +9,6 @@ import { SemVer } from 'semver'
 import { GitHub } from '@actions/github/lib/utils'
 import { Config } from '../src/config'
 import { getOctokit } from '@actions/github'
-import { _buildRelease } from './_utils'
 import * as github from '../src/github'
 import { context } from '@actions/github'
 
