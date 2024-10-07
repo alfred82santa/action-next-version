@@ -33258,7 +33258,7 @@ function getActionInput() {
 }
 async function setActionOutput(value) {
     Object.entries(value)
-        .filter(([k, v]) => typeof v !== 'boolean' || v)
+        .filter(([, v]) => typeof v !== 'boolean' || v)
         .forEach(([k, v]) => (0, core_1.setOutput)(k, v));
     core_1.summary.addHeading(`Next version ${value.version}`);
     core_1.summary.addTable([
