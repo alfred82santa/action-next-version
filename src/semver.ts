@@ -4,6 +4,7 @@ import { GitHub } from '@actions/github/lib/utils'
 import { Level, mapPrereleaseStrToLevel, VersionInfo } from './common'
 import { Config } from './config'
 import { debug } from '@actions/core'
+import { arrayFromAsync } from './utils'
 
 /* eslint-disable-next-line @typescript-eslint/no-require-imports */
 const { t, src } = require('semver/internal/re')
@@ -71,7 +72,7 @@ export async function nextRelease(
           })
         )
         lastRelease = (
-          await Array.fromAsync(
+          await arrayFromAsync(
             octokit.paginate.iterator(octokit.rest.repos.listReleases, {
               owner: config.owner,
               repo: config.repo

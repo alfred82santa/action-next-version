@@ -9,6 +9,7 @@ import { Config } from './config'
 import { compare, inc, Pep440Version } from '@renovatebot/pep440'
 import { parse, stringify } from '@renovatebot/pep440/lib/version'
 import { debug } from '@actions/core'
+import { arrayFromAsync } from './utils'
 
 const NUMPART = '(?:0|[1-9][0-9]*)'
 const PEP440_VERSION_PATTERNS = [
@@ -137,7 +138,7 @@ export async function nextRelease(
       let lastRelease: Pep440Version | undefined = undefined
       try {
         lastRelease = (
-          await Array.fromAsync(
+          await arrayFromAsync(
             octokit.paginate.iterator(octokit.rest.repos.listReleases, {
               owner: config.owner,
               repo: config.repo

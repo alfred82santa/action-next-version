@@ -33451,6 +33451,7 @@ const common_1 = __nccwpck_require__(5026);
 const pep440_1 = __nccwpck_require__(3297);
 const version_1 = __nccwpck_require__(9961);
 const core_1 = __nccwpck_require__(7484);
+const utils_1 = __nccwpck_require__(1798);
 const NUMPART = '(?:0|[1-9][0-9]*)';
 const PEP440_VERSION_PATTERNS = [
     '(?:(?<epoch>[0-9]+)!)?', // epoch
@@ -33555,7 +33556,7 @@ async function nextRelease(config, octokit) {
             const releaseSiblingPattern = getPatternByBaseAndLevel(config.level, baseVersion);
             let lastRelease = undefined;
             try {
-                lastRelease = (await Array.fromAsync(octokit.paginate.iterator(octokit.rest.repos.listReleases, {
+                lastRelease = (await (0, utils_1.arrayFromAsync)(octokit.paginate.iterator(octokit.rest.repos.listReleases, {
                     owner: config.owner,
                     repo: config.repo
                 })))
@@ -33631,6 +33632,7 @@ exports.toVersionInfo = toVersionInfo;
 const semver_1 = __nccwpck_require__(2088);
 const common_1 = __nccwpck_require__(5026);
 const core_1 = __nccwpck_require__(7484);
+const utils_1 = __nccwpck_require__(1798);
 /* eslint-disable-next-line @typescript-eslint/no-require-imports */
 const { t, src } = __nccwpck_require__(5471);
 const BUILDPART = '(\\+([\\d\\w]([+._-]?[\\d\\w]+)*))?';
@@ -33675,7 +33677,7 @@ async function nextRelease(config, octokit) {
                     owner: config.owner,
                     repo: config.repo
                 }));
-                lastRelease = (await Array.fromAsync(octokit.paginate.iterator(octokit.rest.repos.listReleases, {
+                lastRelease = (await (0, utils_1.arrayFromAsync)(octokit.paginate.iterator(octokit.rest.repos.listReleases, {
                     owner: config.owner,
                     repo: config.repo
                 })))
@@ -33723,6 +33725,24 @@ function toVersionInfo(version, build) {
     if (build) {
         result.build = build;
         result.version = [result.versionNoBuild, build].join('+');
+    }
+    return result;
+}
+
+
+/***/ }),
+
+/***/ 1798:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.arrayFromAsync = arrayFromAsync;
+async function arrayFromAsync(it) {
+    const result = [];
+    for await (let a of it) {
+        result.push(a);
     }
     return result;
 }
