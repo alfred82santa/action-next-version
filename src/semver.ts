@@ -5,7 +5,7 @@ import { Level, mapPrereleaseStrToLevel, VersionInfo } from './common'
 import { Config } from './config'
 import { debug } from '@actions/core'
 
-/* eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+/* eslint-disable-next-line @typescript-eslint/no-require-imports */
 const { t, src } = require('semver/internal/re')
 
 const BUILDPART = '(\\+([\\d\\w]([+._-]?[\\d\\w]+)*))?'
