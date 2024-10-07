@@ -136,7 +136,16 @@ export async function nextRelease(
       )
       let lastRelease: Pep440Version | undefined = undefined
       try {
-        lastRelease = (await octokit.rest.repos.listReleases()).data
+        lastRelease = (
+          await Array.fromAsync(
+            octokit.paginate.iterator(octokit.rest.repos.listReleases, {
+              owner: config.owner,
+              repo: config.repo
+            })
+          )
+        )
+          .map(resp => resp.data)
+          .flat()
           .filter(release => release.name && release.name.length > 0)
           .map(release => {
             const match = config.releaseTagPattern.exec(release.name!)

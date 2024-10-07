@@ -33326,17 +33326,20 @@ function mapVersionInfoToOutput(version) {
 /***/ }),
 
 /***/ 2973:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Config = void 0;
+const github_1 = __nccwpck_require__(3228);
 class Config {
     _releaseTagPattern;
     _level;
     _baseVersion;
-    constructor({ releaseTagPattern, level, baseVersion }) {
+    _owner;
+    _repo;
+    constructor({ releaseTagPattern, level, baseVersion, owner, repo }) {
         this._releaseTagPattern = !releaseTagPattern
             ? /v?(\d([.\-_+]?[\d\w]+)*)/
             : releaseTagPattern instanceof RegExp
@@ -33344,6 +33347,8 @@ class Config {
                 : new RegExp(releaseTagPattern);
         this._level = level;
         this._baseVersion = baseVersion;
+        this._owner = owner ?? github_1.context.repo.owner;
+        this._repo = repo ?? github_1.context.repo.repo;
     }
     get releaseTagPattern() {
         return this._releaseTagPattern;
@@ -33353,6 +33358,12 @@ class Config {
     }
     get baseVersion() {
         return this._baseVersion;
+    }
+    get owner() {
+        return this._owner;
+    }
+    get repo() {
+        return this._repo;
     }
 }
 exports.Config = Config;
@@ -33397,7 +33408,6 @@ const config_1 = __nccwpck_require__(2973);
 const common_1 = __nccwpck_require__(5026);
 const semver = __importStar(__nccwpck_require__(1475));
 const pep440 = __importStar(__nccwpck_require__(936));
-const plugin_rest_endpoint_methods_1 = __nccwpck_require__(4935);
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -33405,22 +33415,7 @@ const plugin_rest_endpoint_methods_1 = __nccwpck_require__(4935);
 async function run() {
     try {
         const inputData = (0, action_1.getActionInput)();
-        const octokit = (0, github_1.getOctokit)(inputData.githubToken, {
-            log: {
-                debug: (msg) => {
-                    core.debug(msg);
-                },
-                info: (msg) => {
-                    core.debug(msg);
-                },
-                warn: (msg) => {
-                    core.debug(msg);
-                },
-                error: (msg) => {
-                    core.debug(msg);
-                }
-            }
-        }, plugin_rest_endpoint_methods_1.restEndpointMethods);
+        const octokit = (0, github_1.getOctokit)(inputData.githubToken);
         const config = new config_1.Config(inputData);
         let versionInfo;
         switch (inputData.format) {
@@ -33560,7 +33555,12 @@ async function nextRelease(config, octokit) {
             const releaseSiblingPattern = getPatternByBaseAndLevel(config.level, baseVersion);
             let lastRelease = undefined;
             try {
-                lastRelease = (await octokit.rest.repos.listReleases()).data
+                lastRelease = (await Array.fromAsync(octokit.paginate.iterator(octokit.rest.repos.listReleases, {
+                    owner: config.owner,
+                    repo: config.repo
+                })))
+                    .map(resp => resp.data)
+                    .flat()
                     .filter(release => release.name && release.name.length > 0)
                     .map(release => {
                     const match = config.releaseTagPattern.exec(release.name);
@@ -33671,10 +33671,16 @@ async function nextRelease(config, octokit) {
             const releaseSiblingPattern = getPatternByBaseAndLevel(config.level, baseVersion);
             let lastRelease = undefined;
             try {
-                lastRelease = (await octokit.rest.repos.listReleases({
-                    owner: 'alfred82santa',
-                    repo: 'action-next-version'
-                })).data
+                Array.fromAsync(octokit.paginate.iterator(octokit.rest.repos.listReleases, {
+                    owner: config.owner,
+                    repo: config.repo
+                }));
+                lastRelease = (await Array.fromAsync(octokit.paginate.iterator(octokit.rest.repos.listReleases, {
+                    owner: config.owner,
+                    repo: config.repo
+                })))
+                    .map(resp => resp.data)
+                    .flat()
                     .filter(release => release.name && release.name.length > 0)
                     .map(release => {
                     const match = config.releaseTagPattern.exec(release.name);

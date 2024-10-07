@@ -6,7 +6,6 @@ import { mapVersionInfoToOutput, VersionFormat, VersionInfo } from './common'
 import * as semver from './semver'
 import * as pep440 from './pep440'
 
-import { restEndpointMethods } from '@octokit/plugin-rest-endpoint-methods'
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -14,26 +13,7 @@ import { restEndpointMethods } from '@octokit/plugin-rest-endpoint-methods'
 export async function run(): Promise<void> {
   try {
     const inputData = getActionInput()
-    const octokit = getOctokit(
-      inputData.githubToken,
-      {
-        log: {
-          debug: (msg: string): void => {
-            core.debug(msg)
-          },
-          info: (msg: string): void => {
-            core.debug(msg)
-          },
-          warn: (msg: string): void => {
-            core.debug(msg)
-          },
-          error: (msg: string): void => {
-            core.debug(msg)
-          }
-        }
-      },
-      restEndpointMethods
-    )
+    const octokit = getOctokit(inputData.githubToken)
 
     const config = new Config(inputData)
 

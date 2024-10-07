@@ -64,12 +64,22 @@ export async function nextRelease(
       )
       let lastRelease: SemVer | undefined = undefined
       try {
-        lastRelease = (
-          await octokit.rest.repos.listReleases({
-            owner: 'alfred82santa',
-            repo: 'action-next-version'
+        Array.fromAsync(
+          octokit.paginate.iterator(octokit.rest.repos.listReleases, {
+            owner: config.owner,
+            repo: config.repo
           })
-        ).data
+        )
+        lastRelease = (
+          await Array.fromAsync(
+            octokit.paginate.iterator(octokit.rest.repos.listReleases, {
+              owner: config.owner,
+              repo: config.repo
+            })
+          )
+        )
+          .map(resp => resp.data)
+          .flat()
           .filter(release => release.name && release.name.length > 0)
           .map(release => {
             const match = config.releaseTagPattern.exec(release.name!)
