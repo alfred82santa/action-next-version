@@ -19,7 +19,8 @@ on:
         type: boolean
         default: false
 
-permissions: write-all
+permissions:
+  contents: write
 
 jobs:
   make-release:

@@ -104,7 +104,7 @@ export function toVersionInfo(version: SemVer, build?: string): VersionInfo {
     result.prereleaseType = mapPrereleaseStrToLevel(
       version.prerelease[0] as string
     )
-    result.prereleaseNumber = version.prerelease[0] as number
+    result.prereleaseNumber = version.prerelease[1] as number
   }
   if (build) {
     result.build = build

@@ -33260,11 +33260,11 @@ async function setActionOutput(value) {
     core_1.summary.addHeading(`Next version ${value.version}`);
     core_1.summary.addTable([
         [
-            { data: '**Output field**', header: true },
-            { data: '**Value**', header: true }
+            { data: 'Output field', header: true },
+            { data: 'Value', header: true }
         ],
         ...Object.entries(value).map(([k, v]) => [
-            { data: `**${k}**`, header: true },
+            { data: `${k.toString()}`, header: true },
             v
         ])
     ]);
@@ -33709,7 +33709,7 @@ function toVersionInfo(version, build) {
     };
     if (version.prerelease) {
         result.prereleaseType = (0, common_1.mapPrereleaseStrToLevel)(version.prerelease[0]);
-        result.prereleaseNumber = version.prerelease[0];
+        result.prereleaseNumber = version.prerelease[1];
     }
     if (build) {
         result.build = build;

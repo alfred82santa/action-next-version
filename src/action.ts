@@ -58,11 +58,11 @@ export async function setActionOutput(value: Output): Promise<void> {
   summary.addHeading(`Next version ${value.version}`)
   summary.addTable([
     [
-      { data: '**Output field**', header: true },
-      { data: '**Value**', header: true }
+      { data: 'Output field', header: true },
+      { data: 'Value', header: true }
     ],
     ...Object.entries(value).map(([k, v]) => [
-      { data: `**${k}**`, header: true },
+      { data: `${k.toString()}`, header: true },
       v
     ])
   ])
