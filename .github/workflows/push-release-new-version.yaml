@@ -1,0 +1,50 @@
+name: Push new version to main
+
+on:
+  push:
+    branches:
+      - release/*
+
+permissions:
+  contents: write
+
+jobs:
+  get_main_version:
+    name: Get version in main
+
+    runs-on: ubuntu-latest
+
+    outputs:
+      minorVersion: ${{ steps.define_version.outputs.baseReleaseMinor }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup python
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Get current version
+        id: current-version
+        run: |
+          echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Define release version
+        id: define_version
+        uses: alfred82santa/action-next-version@v1
+        with:
+          version: ${{ steps.current-version.outputs.version }}
+          level: "none"
+          versionFormat: "semver"
+
+  increase_version:
+    needs:
+      - get_main_version
+    if: endsWith(github.ref_name, needs.get_main_version.outputs.minorVersion)
+    uses: ./.github/workflows/common-push-version.yml
+    with:
+      level: "minor"
+      ref: main
+    secrets: inherit

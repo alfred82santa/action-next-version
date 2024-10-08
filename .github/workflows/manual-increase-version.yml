@@ -3,19 +3,25 @@
 name: Increase version
 
 # Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the develop branch
+# events but only for the main branch
 on:
   workflow_dispatch:
     inputs:
       level:
         description: "Version level to increase (major, minor or patch)"
         required: true
-        default: "patch"
+        default: "minor"
         type: choice
         options:
           - patch
           - minor
           - major
+
+      ref:
+        description: "Base branch"
+        required: false
+        default: "main"
+        type: string
 
 permissions:
   contents: write
@@ -26,4 +32,5 @@ jobs:
     uses: ./.github/workflows/common-push-version.yml
     with:
       level: ${{ inputs.level }}
+      ref: ${{ inputs.ref }}
     secrets: inherit

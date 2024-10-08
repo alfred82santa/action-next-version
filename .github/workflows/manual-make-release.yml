@@ -6,7 +6,7 @@ on:
       prereleaseLevel:
         description:
           'Release level. By default it us rc on release/* branches, beta on
-          develop branches and alpha on any else'
+          main branches and alpha on any else'
         type: choice
         options:
           - automatic
