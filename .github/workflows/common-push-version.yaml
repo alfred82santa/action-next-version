@@ -67,6 +67,7 @@ jobs:
         with:
           title: "Bump version to ${{ steps.define_version.outputs.version }}"
           branch: "task/start-version-${{ steps.define_version.outputs.version }}"
+          base: ${{ inputs.ref }}
           delete-branch: true
           commit-message: "Bump version to ${{ steps.define_version.outputs.version }}"
           body: |
