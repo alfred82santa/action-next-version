@@ -25,7 +25,7 @@ export async function getReleases(
     })
     .filter(release => release.tag_name && release.tag_name.length > 0)
     .map(release => {
-      const match = config.releaseTagPattern.exec(release.tag_name!)
+      const match = config.releaseTagPattern.exec(release.tag_name)
       if (match == null) return null
       return match[1]
     })
