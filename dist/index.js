@@ -33383,13 +33383,20 @@ exports.Config = Config;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getReleases = getReleases;
 const utils_1 = __nccwpck_require__(1798);
+const core_1 = __nccwpck_require__(7484);
 async function getReleases(config, octokit) {
+    (0, core_1.debug)(`Listing releases for repo ${config.owner}/${config.repo}`);
+    (0, core_1.debug)(`Filtering by ${config.releaseTagPattern})`);
     return (await (0, utils_1.arrayFromAsync)(octokit.paginate.iterator(octokit.rest.repos.listReleases, {
         owner: config.owner,
         repo: config.repo
     })))
         .map(resp => resp.data)
         .flat()
+        .map(item => {
+        (0, core_1.debug)(`Release found: ${item.name} (${item.tag_name})`);
+        return item;
+    })
         .filter(release => release.name && release.name.length > 0)
         .map(release => {
         const match = config.releaseTagPattern.exec(release.name);
@@ -33397,7 +33404,11 @@ async function getReleases(config, octokit) {
             return null;
         return match[1];
     })
-        .filter(v => v != null);
+        .filter(v => v != null)
+        .map(item => {
+        (0, core_1.debug)(`Valid release found: ${item}`);
+        return item;
+    });
 }
 
 
@@ -33574,6 +33585,7 @@ function getPatternByBaseAndLevel(level, baseVersion) {
     }
 }
 async function nextRelease(config, octokit) {
+    (0, core_1.debug)(`Finding next ${config.level} version based on ${config.baseVersion}`);
     const baseVersion = (0, version_1.parse)(config.baseVersion);
     if (!baseVersion)
         throw Error(`Invalid base version ${config.baseVersion}`);
@@ -33588,6 +33600,7 @@ async function nextRelease(config, octokit) {
             return (0, version_1.parse)((0, pep440_1.inc)(config.baseVersion, 'patch'));
         default: {
             const releaseSiblingPattern = getPatternByBaseAndLevel(config.level, baseVersion);
+            (0, core_1.debug)(`Using release sibling pattern: next ${releaseSiblingPattern}`);
             let lastRelease = undefined;
             try {
                 lastRelease = (await (0, github_1.getReleases)(config, octokit))
@@ -33601,6 +33614,7 @@ async function nextRelease(config, octokit) {
                 (0, core_1.debug)(`${err}`);
             }
             if (!lastRelease) {
+                (0, core_1.debug)('No sibling version found using first one');
                 if (config.level == common_1.Level.DEVELOPMENT) {
                     baseVersion.dev = [_normalizeLevelLetter(config.level), 0];
                 }
@@ -33609,6 +33623,7 @@ async function nextRelease(config, octokit) {
                 }
                 return baseVersion;
             }
+            (0, core_1.debug)(`Previous version found: ${lastRelease}`);
             if (config.level == common_1.Level.DEVELOPMENT) {
                 lastRelease.dev[1] = lastRelease.dev[1] + 1;
                 return lastRelease;
@@ -33680,6 +33695,7 @@ function getPatternByBaseAndLevel(level, baseVersion) {
     }
 }
 async function nextRelease(config, octokit) {
+    (0, core_1.debug)(`Finding next ${config.level} version based on ${config.baseVersion}`);
     const baseVersion = (0, semver_1.parse)(config.baseVersion);
     if (!baseVersion)
         throw Error(`Invalid base version ${config.baseVersion}`);
@@ -33694,6 +33710,7 @@ async function nextRelease(config, octokit) {
             return baseVersion.inc('patch');
         default: {
             const releaseSiblingPattern = getPatternByBaseAndLevel(config.level, baseVersion);
+            (0, core_1.debug)(`Using release sibling pattern: next ${releaseSiblingPattern}`);
             let lastRelease = undefined;
             try {
                 lastRelease = (await (0, github_1.getReleases)(config, octokit))
@@ -33707,11 +33724,13 @@ async function nextRelease(config, octokit) {
                 (0, core_1.debug)(`${err}`);
             }
             if (!lastRelease) {
+                (0, core_1.debug)('No sibling version found using first one');
                 baseVersion.prerelease = [config.level, 0];
                 baseVersion.format();
                 baseVersion.raw = baseVersion.version;
                 return baseVersion;
             }
+            (0, core_1.debug)(`Previous version found: ${lastRelease}`);
             return lastRelease.inc('prerelease');
         }
     }

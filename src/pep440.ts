@@ -120,6 +120,7 @@ export async function nextRelease(
   config: Config,
   octokit: InstanceType<typeof GitHub>
 ): Promise<Pep440Version> {
+  debug(`Finding next ${config.level} version based on ${config.baseVersion}`)
   const baseVersion: Pep440Version | null = parse(config.baseVersion)
 
   if (!baseVersion) throw Error(`Invalid base version ${config.baseVersion}`)
@@ -138,6 +139,8 @@ export async function nextRelease(
         config.level,
         baseVersion
       )
+      debug(`Using release sibling pattern: next ${releaseSiblingPattern}`)
+
       let lastRelease: Pep440Version | undefined = undefined
       try {
         lastRelease = (await getReleases(config, octokit))
@@ -151,6 +154,7 @@ export async function nextRelease(
       }
 
       if (!lastRelease) {
+        debug('No sibling version found using first one')
         if (config.level == Level.DEVELOPMENT) {
           baseVersion.dev = [_normalizeLevelLetter(config.level), 0]
         } else {
@@ -158,6 +162,7 @@ export async function nextRelease(
         }
         return baseVersion
       }
+      debug(`Previous version found: ${lastRelease}`)
       if (config.level == Level.DEVELOPMENT) {
         lastRelease.dev[1] = (lastRelease.dev[1] as number) + 1
         return lastRelease

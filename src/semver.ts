@@ -52,6 +52,7 @@ export async function nextRelease(
   config: Config,
   octokit: InstanceType<typeof GitHub>
 ): Promise<SemVer> {
+  debug(`Finding next ${config.level} version based on ${config.baseVersion}`)
   const baseVersion: SemVer | null = parse(config.baseVersion)
 
   if (!baseVersion) throw Error(`Invalid base version ${config.baseVersion}`)
@@ -70,6 +71,8 @@ export async function nextRelease(
         config.level,
         baseVersion
       )
+      debug(`Using release sibling pattern: next ${releaseSiblingPattern}`)
+
       let lastRelease: SemVer | undefined = undefined
       try {
         lastRelease = (await getReleases(config, octokit))
@@ -83,11 +86,13 @@ export async function nextRelease(
       }
 
       if (!lastRelease) {
+        debug('No sibling version found using first one')
         baseVersion.prerelease = [config.level as string, 0]
         baseVersion.format()
         baseVersion.raw = baseVersion.version
         return baseVersion
       }
+      debug(`Previous version found: ${lastRelease}`)
       return lastRelease.inc('prerelease')
     }
   }
