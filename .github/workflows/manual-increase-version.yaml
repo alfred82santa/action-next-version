@@ -1,0 +1,26 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Increase version
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the develop branch
+on:
+  workflow_dispatch:
+    inputs:
+      level:
+        description: "Version level to increase (major, minor or patch)"
+        required: true
+        default: "patch"
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  increase_version:
+    uses: ./.github/workflows/common-push-version.yaml
+    with:
+      level: ${{ inputs.level }}
+    secrets: inherit
