@@ -12,6 +12,9 @@ on:
       - master
       - release/*
 
+permissions:
+  contents: write
+
 jobs:
   make-release:
     uses: ./.github/workflows/common-make-release.yml
