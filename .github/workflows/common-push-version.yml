@@ -54,7 +54,7 @@ jobs:
         uses: alfred82santa/action-next-version@v1
         with:
           version: ${{ steps.current-version.outputs.version }}
-          level: ${{ inputs.level || contains(fromJson('["master", "main"]'), inputs.ref) && 'minor' || (startsWith(github.ref_name, 'release/')) && 'patch' || 'none' }}
+          level: ${{ inputs.level || contains(fromJson('["master", "main"]'), inputs.ref) && 'minor' || (startsWith(inputs.ref, 'release/')) && 'patch' || 'none' }}
           versionFormat: "semver"
 
       - name: Set new version
