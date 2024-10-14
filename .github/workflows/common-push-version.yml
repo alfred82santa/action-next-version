@@ -64,7 +64,7 @@ jobs:
           npm version ${{ steps.define_version.outputs.version }} --no-git-tag-version --no-commit-hooks
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v7
         with:
           title: "Bump version to ${{ steps.define_version.outputs.version }}"
           branch: "task/start-version-${{ steps.define_version.outputs.version }}"
