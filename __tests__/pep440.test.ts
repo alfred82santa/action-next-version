@@ -2,7 +2,11 @@
  * Unit tests for src/pep440.ts
  */
 
-import { getPatternByBaseAndLevel, nextRelease } from '../src/pep440'
+import {
+  getPatternByBaseAndLevel,
+  nextRelease,
+  toVersionInfo
+} from '../src/pep440'
 import { Level } from '../src/common'
 import { expect } from '@jest/globals'
 import { GitHub } from '@actions/github/lib/utils'
@@ -307,5 +311,63 @@ describe('PEP440: nextRelease', () => {
         octokit
       )
     ).resolves.toEqual(parse('3.7.48-dev.0'))
+  })
+})
+
+describe('PEP440: toVersionInfo', () => {
+  it('Release version', () => {
+    expect(toVersionInfo(parse('2.54.2')!)).toEqual({
+      version: '2.54.2',
+      versionNoBuild: '2.54.2',
+      major: 2,
+      minor: 54,
+      patch: 2
+    })
+  })
+  it('Release candidate version', () => {
+    expect(toVersionInfo(parse('2.54.2rc4')!)).toEqual({
+      version: '2.54.2rc4',
+      versionNoBuild: '2.54.2rc4',
+      major: 2,
+      minor: 54,
+      patch: 2,
+      prereleaseType: 'rc',
+      prereleaseNumber: 4
+    })
+  })
+  it('Beta version', () => {
+    expect(toVersionInfo(parse('2.54.2beta14')!)).toEqual({
+      version: '2.54.2b14',
+      versionNoBuild: '2.54.2b14',
+      major: 2,
+      minor: 54,
+      patch: 2,
+      prereleaseType: 'beta',
+      prereleaseNumber: 14
+    })
+  })
+
+  it('Alpha version', () => {
+    expect(toVersionInfo(parse('2.54.2alpha14')!)).toEqual({
+      version: '2.54.2a14',
+      versionNoBuild: '2.54.2a14',
+      major: 2,
+      minor: 54,
+      patch: 2,
+      prereleaseType: 'alpha',
+      prereleaseNumber: 14
+    })
+  })
+
+  it('Development version', () => {
+    expect(toVersionInfo(parse('2.54.2dev14')!)).toEqual({
+      version: '2.54.2.dev14',
+      versionNoBuild: '2.54.2.dev14',
+      major: 2,
+      minor: 54,
+      patch: 2,
+      prereleaseType: 'dev',
+      prereleaseNumber: 14
+    })
   })
 })
