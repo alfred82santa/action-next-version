@@ -184,15 +184,18 @@ export function toVersionInfo(
   build?: string
 ): VersionInfo {
   const result: VersionInfo = {
-    version: version.public,
-    versionNoBuild: version.public,
+    version: stringify(version)!,
+    versionNoBuild: stringify(version)!,
     major: version.release[0] ?? 0,
     minor: version.release[1] ?? 0,
     patch: version.release[2] ?? 0
   }
   if (version.pre) {
     result.prereleaseType = mapPrereleaseStrToLevel(version.pre[0] as string)
-    result.prereleaseNumber = version.pre[0] as number
+    result.prereleaseNumber = version.pre[1] as number
+  } else if (version.dev) {
+    result.prereleaseType = mapPrereleaseStrToLevel(version.dev[0] as string)
+    result.prereleaseNumber = version.dev[1] as number
   }
   if (build) {
     result.build = build
