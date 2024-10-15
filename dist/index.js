@@ -33636,15 +33636,19 @@ async function nextRelease(config, octokit) {
 }
 function toVersionInfo(version, build) {
     const result = {
-        version: version.public,
-        versionNoBuild: version.public,
+        version: (0, version_1.stringify)(version),
+        versionNoBuild: (0, version_1.stringify)(version),
         major: version.release[0] ?? 0,
         minor: version.release[1] ?? 0,
         patch: version.release[2] ?? 0
     };
     if (version.pre) {
         result.prereleaseType = (0, common_1.mapPrereleaseStrToLevel)(version.pre[0]);
-        result.prereleaseNumber = version.pre[0];
+        result.prereleaseNumber = version.pre[1];
+    }
+    else if (version.dev) {
+        result.prereleaseType = (0, common_1.mapPrereleaseStrToLevel)(version.dev[0]);
+        result.prereleaseNumber = version.dev[1];
     }
     if (build) {
         result.build = build;
