@@ -1,7 +1,7 @@
 {
   "name": "action-next-version",
   "description": "Action Next Version",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "Alfred Santacatalina<alfred82santa@gmail.com>",
   "private": false,
   "homepage": "https://github.com/alfred82santa/action-next-version",
