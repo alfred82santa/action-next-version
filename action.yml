@@ -25,7 +25,7 @@ inputs:
   releaseTagPattern:
     description: 'Release prefix to filter'
     required: false
-    default: "^v([1-9](?:\\.?[0-9]+)*(?:[\\.\\-_+0-9a-zA-Z]+)?)$"
+    default: "^v((?:[1-9][0-9]*|0)(?:\\.(?:[1-9][0-9]*|0))*(?:[\\.\\-_+]?[a-zA-Z](?:[\\.\\-_+0-9a-zA-Z]+)?)?)$"
   token:
     description: Personal access token (PAT)
     required: true
