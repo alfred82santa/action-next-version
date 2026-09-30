@@ -13,6 +13,8 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
+    "isolatedModules": true,
+    "types": ["jest", "node", "mocha"],
     "newLine": "lf"
   },
   "exclude": ["./dist", "./node_modules", "./__tests__", "./coverage"]

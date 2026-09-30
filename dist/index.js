@@ -32964,13 +32964,13 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = run;
-const core = __importStar(__nccwpck_require__(7484));
 const action_1 = __nccwpck_require__(2929);
 const github_1 = __nccwpck_require__(3228);
 const config_1 = __nccwpck_require__(2973);
 const common_1 = __nccwpck_require__(5026);
 const semver = __importStar(__nccwpck_require__(1475));
 const pep440 = __importStar(__nccwpck_require__(936));
+const core_1 = __nccwpck_require__(7484);
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -32994,7 +32994,7 @@ async function run() {
     catch (error) {
         // Fail the workflow run if an error occurs
         if (error instanceof Error)
-            core.setFailed(error.message);
+            (0, core_1.setFailed)(error.message);
     }
 }
 
@@ -33191,8 +33191,8 @@ exports.nextRelease = nextRelease;
 exports.toVersionInfo = toVersionInfo;
 const semver_1 = __nccwpck_require__(2088);
 const common_1 = __nccwpck_require__(5026);
-const core_1 = __nccwpck_require__(7484);
 const github_1 = __nccwpck_require__(9248);
+const core_1 = __nccwpck_require__(7484);
 /* eslint-disable-next-line @typescript-eslint/no-require-imports */
 const { t, src } = __nccwpck_require__(5471);
 const BUILDPART = '(\\+([\\d\\w]([+._-]?[\\d\\w]+)*))?';
@@ -35984,8 +35984,7 @@ function explain(version) {
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat */
-/******/ 	
+/******/ 	/* webpack/runtime/asset-relocator-loader */
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/

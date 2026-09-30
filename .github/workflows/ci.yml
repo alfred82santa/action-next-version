@@ -54,6 +54,10 @@ jobs:
       - name: Checkout
         id: checkout
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+          ref: ${{ github.ref }}
+          repository: ${{ github.repository }}
 
       - name: Setup Node.js
         id: setup-node

@@ -1,10 +1,10 @@
-import * as core from '@actions/core'
 import { getActionInput, setActionOutput } from './action'
 import { getOctokit } from '@actions/github'
 import { Config } from './config'
 import { mapVersionInfoToOutput, VersionFormat, VersionInfo } from './common'
 import * as semver from './semver'
 import * as pep440 from './pep440'
+import { setFailed } from '@actions/core'
 
 /**
  * The main function for the action.
@@ -36,6 +36,6 @@ export async function run(): Promise<void> {
     await setActionOutput(mapVersionInfoToOutput(versionInfo))
   } catch (error) {
     // Fail the workflow run if an error occurs
-    if (error instanceof Error) core.setFailed(error.message)
+    if (error instanceof Error) setFailed(error.message)
   }
 }
