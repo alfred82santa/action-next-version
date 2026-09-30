@@ -1,61 +1,61 @@
-name: 'Define next version action'
-description: 'Calculate new version of package'
-author: 'Alfred Santacatalina'
+name: "Define next version action"
+description: "Calculate new version of package"
+author: "Alfred Santacatalina"
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
-  icon: 'heart'
-  color: 'red'
+  icon: "heart"
+  color: "red"
 
 # Define your inputs here.
 inputs:
   version:
-    description: 'Package version'
+    description: "Package version"
     required: true
   versionFormat:
-    description: 'Version format. Allowed values: semver and pep440'
+    description: "Version format. Allowed values: semver and pep440"
     required: true
-    default: 'semver'
+    default: "semver"
   level:
     description:
-      'Next version level. Allowed values: major, minor, patch, rc, beta, alpha,
-      dev'
+      "Next version level. Allowed values: major, minor, patch, rc, beta, alpha,
+      dev"
     required: true
     default: patch
   releaseTagPattern:
-    description: 'Release prefix to filter'
+    description: "Release prefix to filter"
     required: false
     default: "^v((?:[1-9][0-9]*|0)(?:\\.(?:[1-9][0-9]*|0))*(?:[\\.\\-_+]?[a-zA-Z](?:[\\.\\-_+0-9a-zA-Z]+)?)?)$"
   token:
     description: Personal access token (PAT)
     required: true
-    default: '${{ github.token }}'
+    default: "${{ github.token }}"
 
 # Define your outputs here.
 outputs:
   version:
-    description: 'Next version'
+    description: "Next version"
   baseRelease:
-    description: 'Base release version'
+    description: "Base release version"
   baseReleaseMinor:
-    description: 'Base release version - minor granularity'
+    description: "Base release version - minor granularity"
   versionNoBuild:
-    description: 'Next version with no build part'
+    description: "Next version with no build part"
   major:
-    description: 'Major part'
+    description: "Major part"
   minor:
-    description: 'Minor part'
+    description: "Minor part"
   patch:
-    description: 'Patch part'
+    description: "Patch part"
   prereleaseType:
-    description: 'Prerelease type'
+    description: "Prerelease type"
   prereleaseNumber:
-    description: 'Prerelease number'
+    description: "Prerelease number"
   isPrerelease:
-    description: 'Whether it is a prerelease or not'
+    description: "Whether it is a prerelease or not"
   build:
-    description: 'Build part'
+    description: "Build part"
 
 runs:
-  using: node20
+  using: node24
   main: dist/index.js
