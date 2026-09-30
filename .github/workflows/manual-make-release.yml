@@ -35,8 +35,7 @@ permissions:
 jobs:
   make-release:
     name: Make release
-    uses: ./.github/workflows/common-make-release.yml
-    secrets: inherit
+    uses: ./.github/workflows/common-make-release.yml # zizmor: ignore[self-repository]
     with:
       prereleaseLevel:
         ${{ inputs.prereleaseLevel == 'automatic' && (startsWith(github.ref_name, 'release/') && 'rc' || github.ref_name == 'main' && 'beta' || 'alpha') ||  (inputs.prereleaseLevel != 'production' && inputs.prereleaseLevel) || 'none' }}
