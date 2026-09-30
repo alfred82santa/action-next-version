@@ -16,7 +16,6 @@ permissions:
 
 jobs:
   make-release:
-    uses: ./.github/workflows/common-make-release.yml
-    secrets: inherit
+    uses: ./.github/workflows/common-make-release.yml # zizmor: ignore[self-repository]
     with:
       prereleaseLevel: ${{ contains(fromJson('["master", "main"]'), github.ref_name) && 'beta' || (startsWith(github.ref_name, 'release/')) && 'rc' || 'alpha' }}

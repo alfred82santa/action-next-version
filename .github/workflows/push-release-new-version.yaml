@@ -7,9 +7,7 @@ on:
 
 run-name: Bump version in main because ${{ github.ref_name }} pushed.
 
-permissions:
-  contents: write
-  pull-requests: write
+permissions: {}
 
 jobs:
   get_main_version:
@@ -17,17 +15,22 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+
     outputs:
       minorVersion: ${{ steps.define_version.outputs.baseReleaseMinor }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: main
+          persist-credentials: false
 
-      - name: Setup python
-        uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: "20"
+          node-version-file: .node-version
+          package-manager-cache: false
 
       - name: Get current version
         id: current-version
@@ -36,7 +39,7 @@ jobs:
 
       - name: Define release version
         id: define_version
-        uses: alfred82santa/action-next-version@v1
+        uses: alfred82santa/action-next-version@a10a6ecf5bd78cf83bd37c718049931878db4f8d # v1.3.0
         with:
           version: ${{ steps.current-version.outputs.version }}
           level: "none"
@@ -46,8 +49,10 @@ jobs:
     needs:
       - get_main_version
     if: endsWith(github.ref_name, needs.get_main_version.outputs.minorVersion)
-    uses: ./.github/workflows/common-push-version.yml
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: ./.github/workflows/common-push-version.yml # zizmor: ignore[self-repository]
     with:
       level: "minor"
       ref: main
-    secrets: inherit

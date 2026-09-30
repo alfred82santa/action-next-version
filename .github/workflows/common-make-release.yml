@@ -4,18 +4,18 @@ on:
   workflow_call:
     inputs:
       prereleaseLevel:
-        description: 'Prerelease level: rc, beta, alpha, dev'
+        description: "Prerelease level: rc, beta, alpha, dev"
         type: string
 
       moveReleasePointers:
         description:
-          'For stable releases, this flag indicates that major and minor version
-          release tags must be move to new one'
+          "For stable releases, this flag indicates that major and minor version
+          release tags must be move to new one"
         type: boolean
         default: true
 
       isLatest:
-        description: 'Whether release must be flagged as latest'
+        description: "Whether release must be flagged as latest"
         type: boolean
         default: false
 
@@ -30,14 +30,16 @@ jobs:
     steps:
       - name: Checkout
         id: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Setup Node.js
         id: setup-node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .node-version
-          cache: npm
+          package-manager-cache: false
 
       - name: Get current version
         id: current-version
@@ -46,37 +48,37 @@ jobs:
 
       - name: Calculate next version
         id: next-version
-        uses: ./
+        uses: ./ # zizmor: ignore[self-repository]
         with:
           version: ${{ steps.current-version.outputs.version }}
           level: ${{ inputs.prereleaseLevel }}
-          versionFormat: 'semver'
+          versionFormat: "semver"
 
       - name: Release
-        uses: softprops/action-gh-release@v2
+        # zizmor: ignore[superfluous-actions]
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
-          name: 'Release ${{ steps.next-version.outputs.version }}'
+          name: "Release ${{ steps.next-version.outputs.version }}"
           prerelease: ${{ !!steps.next-version.outputs.isPrerelease }}
-          tag_name:
-            'v${{ steps.next-version.outputs.version }}'
+          tag_name: "v${{ steps.next-version.outputs.version }}"
           generate_release_notes: true
           make_latest: ${{ inputs.isLatest }}
           target_commitish: ${{ github.ref }}
 
       - name: Creates or update minor release tag reference
-        uses: rickstaa/action-create-tag@v1
-        id: 'tag_minor_create'
-        if: '${{ !steps.next-version.outputs.isPrerelease && inputs.moveReleasePointers }}'
+        uses: rickstaa/action-create-tag@a1c7777fcb2fee4f19b0f283ba888afa11678b72 # v1.7.2
+        id: "tag_minor_create"
+        if: "${{ !steps.next-version.outputs.isPrerelease && inputs.moveReleasePointers }}"
         with:
-          tag: 'v${{ steps.next-version.outputs.baseReleaseMinor }}'
+          tag: "v${{ steps.next-version.outputs.baseReleaseMinor }}"
           force_push_tag: true
-          message: 'Release ${{ steps.next-version.outputs.version }}'
+          message: "Release ${{ steps.next-version.outputs.version }}"
 
       - name: Creates or update major release tag reference
-        uses: rickstaa/action-create-tag@v1
-        id: 'tag_major_create'
-        if: '${{ !steps.next-version.outputs.isPrerelease && inputs.moveReleasePointers }}'
+        uses: rickstaa/action-create-tag@a1c7777fcb2fee4f19b0f283ba888afa11678b72 # v1.7.2
+        id: "tag_major_create"
+        if: "${{ !steps.next-version.outputs.isPrerelease && inputs.moveReleasePointers }}"
         with:
-          tag: 'v${{ steps.next-version.outputs.major }}'
+          tag: "v${{ steps.next-version.outputs.major }}"
           force_push_tag: true
-          message: 'Release ${{ steps.next-version.outputs.version }}'
+          message: "Release ${{ steps.next-version.outputs.version }}"

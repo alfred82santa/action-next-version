@@ -30,8 +30,7 @@ permissions:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   increase_version:
-    uses: ./.github/workflows/common-push-version.yml
+    uses: ./.github/workflows/common-push-version.yml # zizmor: ignore[self-repository]
     with:
       level: ${{ inputs.level }}
       ref: ${{ inputs.ref }}
-    secrets: inherit

@@ -1,15 +1,14 @@
-import { compare, parse, SemVer } from 'semver'
-
-import { GitHub } from '@actions/github/lib/utils'
+import { compare, parse, type SemVer } from 'semver'
+import type { GitHub } from '@actions/github/lib/utils'
 import {
   Level,
   mapPrereleaseStrToLevel,
-  RealLevel,
-  VersionInfo
+  type RealLevel,
+  type VersionInfo
 } from './common'
-import { Config } from './config'
-import { debug } from '@actions/core'
+import type { Config } from './config'
 import { getReleases } from './github'
+import { debug } from '@actions/core'
 
 /* eslint-disable-next-line @typescript-eslint/no-require-imports */
 const { t, src } = require('semver/internal/re')
@@ -87,7 +86,7 @@ export async function nextRelease(
 
       if (!lastRelease) {
         debug('No sibling version found using first one')
-        baseVersion.prerelease = [config.level as string, 0]
+        baseVersion.prerelease = [config.level, 0]
         baseVersion.format()
         baseVersion.raw = baseVersion.version
         return baseVersion

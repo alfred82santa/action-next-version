@@ -17,17 +17,12 @@ export enum Level {
 }
 
 export type PrereleaseLevelNoDev =
-  | Level.RELEASE_CANDIDATE
-  | Level.BETA
-  | Level.ALPHA
+  Level.RELEASE_CANDIDATE | Level.BETA | Level.ALPHA
 
 export type PrereleaseLevel = PrereleaseLevelNoDev | Level.DEVELOPMENT
 
 export type RealLevel =
-  | PrereleaseLevel
-  | Level.MAJOR
-  | Level.MINOR
-  | Level.PATCH
+  PrereleaseLevel | Level.MAJOR | Level.MINOR | Level.PATCH
 
 export interface VersionInfo {
   version: string
