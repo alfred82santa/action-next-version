@@ -87,7 +87,7 @@ export async function nextRelease(
 
       if (!lastRelease) {
         debug('No sibling version found using first one')
-        baseVersion.prerelease = [config.level as string, 0]
+        baseVersion.prerelease = [config.level, 0]
         baseVersion.format()
         baseVersion.raw = baseVersion.version
         return baseVersion

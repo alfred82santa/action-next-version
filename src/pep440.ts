@@ -52,7 +52,7 @@ function _normalizeLevelLetter(level: Level): string {
     case Level.ALPHA:
       return 'a'
     default:
-      return level as string
+      return level
   }
 }
 function _buildPrereleasePrefixes(level: PrereleaseLevelNoDev): string[] {
