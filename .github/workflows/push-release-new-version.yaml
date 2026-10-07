@@ -39,7 +39,7 @@ jobs:
 
       - name: Define release version
         id: define_version
-        uses: alfred82santa/action-next-version@a10a6ecf5bd78cf83bd37c718049931878db4f8d # v1.3.0
+        uses: alfred82santa/action-next-version@d2aa2637930d21eea846d7c1df8cf819e37df7ae # v1.4.0
         with:
           version: ${{ steps.current-version.outputs.version }}
           level: "none"
