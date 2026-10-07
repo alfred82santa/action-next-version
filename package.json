@@ -89,7 +89,7 @@
     "@eslint/eslintrc": "^3.3.7",
     "@eslint/js": "^10.0.1",
     "@eslint/object-schema": "^3.0.5",
-    "@renovatebot/pep440": "^4.2.4",
+    "@renovatebot/pep440": "^5.0.1",
     "globals": "^17.12.0",
     "semver": "^7.8.5"
   },
