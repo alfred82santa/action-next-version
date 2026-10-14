@@ -90,7 +90,7 @@
     "@eslint/js": "^10.0.1",
     "@eslint/object-schema": "^3.0.5",
     "@renovatebot/pep440": "^4.2.4",
-    "globals": "^17.12.0",
+    "globals": "^17.13.0",
     "semver": "^7.8.5"
   },
   "devDependencies": {
